@@ -1,3 +1,20 @@
+# 概要 
+- 音楽のラップの韻のクイズサイトです
+- AIにコードを書かせて実装（Claude Code使用）
+
+<img width="250" height="675" alt="スクリーンショット 2026-02-23 16 42 33" src="https://github.com/user-attachments/assets/04f53492-d269-4a95-92c0-096a6382cd0e" />
+<br>
+<img width="250" height="490" alt="スクリーンショット 2026-02-23 16 42 55" src="https://github.com/user-attachments/assets/64ecbac4-af29-4d7d-a367-2d889c574f46" />
+
+
+# URL
+  - [韻クイズ](https://rhyme-quiz-claude.tvhfrks12678.workers.dev/quiz)
+
+# 技術
+- 言語: TypeScript
+- フレームワーク: TanStack Start（React）
+- インフラ: Cloudflare
+
 Welcome to your new TanStack Start app! 
 
 # Getting Started
