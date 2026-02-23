@@ -9,38 +9,75 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiQuizNextRouteImport } from './routes/api/quiz/next'
+import { Route as ApiQuizIdSubmitRouteImport } from './routes/api/quiz/$id.submit'
 
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiQuizNextRoute = ApiQuizNextRouteImport.update({
+  id: '/api/quiz/next',
+  path: '/api/quiz/next',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizIdSubmitRoute = ApiQuizIdSubmitRouteImport.update({
+  id: '/api/quiz/$id/submit',
+  path: '/api/quiz/$id/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/api/quiz/next': typeof ApiQuizNextRoute
+  '/api/quiz/$id/submit': typeof ApiQuizIdSubmitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/api/quiz/next': typeof ApiQuizNextRoute
+  '/api/quiz/$id/submit': typeof ApiQuizIdSubmitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/api/quiz/next': typeof ApiQuizNextRoute
+  '/api/quiz/$id/submit': typeof ApiQuizIdSubmitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/quiz' | '/api/quiz/next' | '/api/quiz/$id/submit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/quiz' | '/api/quiz/next' | '/api/quiz/$id/submit'
+  id: '__root__' | '/' | '/quiz' | '/api/quiz/next' | '/api/quiz/$id/submit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  QuizRoute: typeof QuizRoute
+  ApiQuizNextRoute: typeof ApiQuizNextRoute
+  ApiQuizIdSubmitRoute: typeof ApiQuizIdSubmitRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/quiz/next': {
+      id: '/api/quiz/next'
+      path: '/api/quiz/next'
+      fullPath: '/api/quiz/next'
+      preLoaderRoute: typeof ApiQuizNextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quiz/$id/submit': {
+      id: '/api/quiz/$id/submit'
+      path: '/api/quiz/$id/submit'
+      fullPath: '/api/quiz/$id/submit'
+      preLoaderRoute: typeof ApiQuizIdSubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  QuizRoute: QuizRoute,
+  ApiQuizNextRoute: ApiQuizNextRoute,
+  ApiQuizIdSubmitRoute: ApiQuizIdSubmitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
