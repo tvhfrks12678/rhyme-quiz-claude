@@ -1,5 +1,6 @@
-# 概要 
-- 音楽のラップの韻のクイズサイトです
+# 概要
+- 音楽のラップの韻に関するクイズサイトです
+- 問題文（例:「とら」）と同じ母音パターンを持つ選択肢を選ぶゲームです
 - AIにコードを書かせて実装（Claude Code使用）
 
 <img width="250" height="675" alt="スクリーンショット 2026-02-23 16 42 33" src="https://github.com/user-attachments/assets/04f53492-d269-4a95-92c0-096a6382cd0e" />
@@ -10,12 +11,148 @@
 # URL
   - [韻クイズ](https://rhyme-quiz-claude.tvhfrks12678.workers.dev/quiz)
 
-# 技術
+# 技術スタック
 - 言語: TypeScript
-- フレームワーク: TanStack Start（React）
-- インフラ: Cloudflare
+- フレームワーク: TanStack Start（React 19）
+- クライアント状態管理: zustand
+- サーバーデータ取得: TanStack Query
+- バリデーション: zod
+- UI: shadcn/ui + Tailwind CSS v4
+- インフラ: Cloudflare Workers
 
-Welcome to your new TanStack Start app! 
+---
+
+# クイズの動作フロー
+
+```
+1. ユーザーが /quiz にアクセス
+2. GET /api/quiz/next → 問題文 + 選択肢（正解情報なし）を返す
+3. ユーザーがチェックボックスで選択肢を選ぶ
+4. 「解答する」ボタンを押す
+5. POST /api/quiz/:id/submit → サーバーで正誤判定
+6. 結果を表示（正解/不正解・解説・全選択肢の母音・問題文の母音）
+7. 「次の問題へ」で次の問題に進む（全5問）
+```
+
+> **セキュリティ設計**: クイズ表示時に母音・正解フラグはフロントに送らず、正誤判定はサーバーサイドで行います。DevToolsで答えが見えないよう設計されています。
+
+---
+
+# ディレクトリ構造
+
+```
+src/
+├── components/
+│   └── ui/                        # shadcn/ui 共通UIパーツ（Button, Card など）
+│
+├── features/
+│   └── quiz/
+│       ├── contracts/             # API契約（zodスキーマ + 型定義）
+│       │   └── quiz.ts
+│       │
+│       ├── domain/                # フレームワーク完全非依存の純粋ビジネスロジック
+│       │   ├── entities/          # 内部データ型（DB/JSONから取得した完全なデータ）
+│       │   │   └── quiz.ts
+│       │   ├── logic/             # 純粋関数（テスト可能なビジネスルール）
+│       │   │   ├── rhyme.ts       # 韻の正誤判定ロジック
+│       │   │   └── scoring.ts     # スコア計算ロジック
+│       │   └── ports/             # リポジトリのインターフェース定義
+│       │       └── quizRepository.ts
+│       │
+│       ├── application/           # ユースケース層（フレームワーク非依存）
+│       │   └── services/
+│       │       └── quizService.ts # ユースケースの実行（取得 → ロジック適用 → 返却）
+│       │
+│       ├── infrastructure/        # 外部依存の実装（DB・JSON読み込みなど）
+│       │   ├── data/
+│       │   │   └── quizData.ts    # クイズデータ（現在はTypeScriptベタ書き）
+│       │   ├── repositories/
+│       │   │   └── jsonQuizRepository.ts  # QuizRepositoryのJSON実装
+│       │   └── getRepository.ts   # 実装の切り替えポイント（今後DBへの移行に対応）
+│       │
+│       ├── presentation/          # React UI層
+│       │   ├── hooks/
+│       │   │   └── useQuiz.ts     # zustand store + TanStack Query
+│       │   ├── parts/
+│       │   │   ├── QuizCard.tsx   # 問題文・画像・選択肢・解答ボタン
+│       │   │   ├── ChoiceList.tsx # チェックボックス形式の選択肢リスト
+│       │   │   ├── ResultDisplay.tsx # 正解/不正解・解説・母音表示
+│       │   │   └── ScoreDisplay.tsx  # スコアとプログレスバー
+│       │   └── QuizPage.tsx       # ページ全体の組み立て
+│       │
+│       └── index.ts               # featureの公開API（外部への公開エントリポイント）
+│
+└── routes/
+    ├── __root.tsx                 # ルートレイアウト
+    ├── index.tsx                  # トップページ
+    ├── quiz.tsx                   # クイズページ（QuizPageをインポート）
+    └── api/quiz/
+        ├── next.ts                # GET  /api/quiz/next
+        └── $id.submit.ts          # POST /api/quiz/:id/submit
+```
+
+---
+
+# 各ディレクトリの役割と処理の流れ
+
+## アーキテクチャの概要（ヘキサゴナルアーキテクチャ）
+
+```
+[ユーザー操作]
+     ↓
+presentation/       ← React UI。/api/* を TanStack Query で叩く
+     ↓  (HTTP)
+routes/api/         ← HTTP ルーティング層（薄いラッパー）
+     ↓
+application/        ← ユースケースの実行（フレームワーク非依存）
+     ↓
+domain/             ← ビジネスルール（純粋TypeScript。何にも依存しない）
+     ↑
+infrastructure/     ← 外部依存の実装（domain/ports のインターフェースを満たす）
+```
+
+## 各層の説明
+
+### `contracts/` — API契約
+- **役割**: クライアントとサーバー間でやり取りするデータの型・バリデーションを一元管理
+- **依存**: `zod` のみ
+- `QuizQuestionSchema` / `SubmitRequestSchema` / `SubmitResponseSchema` を定義
+- **重要**: 母音・正解フラグは含まない（答えの漏洩防止）
+
+### `domain/entities/` — 内部データ型
+- **役割**: サーバー内部でのみ扱う完全なクイズデータの型定義
+- `QuizFull` — `questionVowels`（母音）や `isCorrect` フラグを含む完全なクイズデータ
+- `ChoiceFull` — 各選択肢の母音・正解フラグを含む
+- `QuizResult` — 正誤判定の結果型
+- **contracts/ との違い**: contracts はクライアントへ公開する型（答え情報なし）、entities はサーバー内部の完全なデータ型
+
+### `domain/logic/` — 純粋なビジネスロジック
+- **役割**: フレームワークに依存しない、テスト可能な純粋関数
+- `rhyme.ts` — `judgeAnswer(quiz, selectedIds)` 選択された選択肢の母音と問題文の母音を比較して正誤判定
+- `scoring.ts` — `calculateScore(results)` 結果配列から正解数・正答率を計算
+
+### `domain/ports/` — リポジトリインターフェース
+- **役割**: データ取得方法の抽象化（実装の詳細に依存しない）
+- `QuizRepository` インターフェース: `findAllQuestions()` / `findFullById(id)`
+
+### `application/services/` — ユースケース層
+- **役割**: 「問題を取得して返す」「回答を受け取って判定する」というユースケースを実行
+- `getQuestionByIndex(index)` — リポジトリから問題を取得し、クライアント用に整形（答え情報を除外）
+- `submitAnswer(id, selectedIds)` — リポジトリから完全データを取得し、`judgeAnswer` で判定して返す
+
+### `infrastructure/` — 外部依存の実装
+- **役割**: データの実際の取得方法を担当（domain/ports のインターフェースを実装）
+- `data/quizData.ts` — 現在はTypeScriptで書いたクイズデータ（将来はDB移行予定）
+- `repositories/jsonQuizRepository.ts` — `QuizRepository` のJSON実装
+- `getRepository.ts` — 実装の切り替えポイント（JSON実装 → DB実装への切り替えをここで行う）
+
+### `presentation/` — React UI層
+- **役割**: ユーザーインターフェースと状態管理
+- **依存**: `contracts/`（型のみ）、`domain/logic/scoring`（純粋関数）
+- `useQuiz.ts` — zustand で状態管理 + TanStack Query で `/api` を叩く
+- UIコンポーネント: 問題・選択肢・結果・スコアを表示
+
+---
 
 # Getting Started
 
