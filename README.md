@@ -19,8 +19,8 @@
 - クライアント状態管理: zustand
 - サーバーデータ取得: TanStack Query
 - バリデーション: zod
-- UI: shadcn/ui + Tailwind CSS v4
-- AI: Claude Code Codex Gemini CLI
+- UI: shadcn/ui + Magic UI + Tailwind CSS v4
+- AI: Claude Code + Codex + Gemini CLI
 - インフラ: Cloudflare Workers
 
 ---
