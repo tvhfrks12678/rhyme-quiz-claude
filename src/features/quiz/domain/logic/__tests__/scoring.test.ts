@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { calculateScore } from "../scoring"
+import { calculateScore, getRhymeRank } from "../scoring"
 
 describe("calculateScore", () => {
 	it("全問正解のとき correct=5, percentage=100 を返す", () => {
@@ -38,5 +38,22 @@ describe("calculateScore", () => {
 		expect(score.correct).toBe(0)
 		expect(score.total).toBe(0)
 		expect(score.percentage).toBe(0)
+	})
+})
+
+
+describe("getRhymeRank", () => {
+	it("0〜5問正解に対応した称号を返す", () => {
+		expect(getRhymeRank(0)).toBe("韻の素人")
+		expect(getRhymeRank(1)).toBe("韻の見習い")
+		expect(getRhymeRank(2)).toBe("韻の黒帯")
+		expect(getRhymeRank(3)).toBe("韻のプロ")
+		expect(getRhymeRank(4)).toBe("韻の皇帝")
+		expect(getRhymeRank(5)).toBe("韻の神")
+	})
+
+	it("範囲外の正解数は0〜5に丸める", () => {
+		expect(getRhymeRank(-1)).toBe("韻の素人")
+		expect(getRhymeRank(10)).toBe("韻の神")
 	})
 })
