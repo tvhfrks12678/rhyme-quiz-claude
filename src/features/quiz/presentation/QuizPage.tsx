@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 
 import { calculateScore, getRhymeRank } from "../domain/logic/scoring"
 import { useCurrentQuestion, useQuizStore } from "./hooks/useQuiz"
+import { FinalResult } from "./parts/FinalResult"
 import { QuizCard } from "./parts/QuizCard"
 import { ResultDisplay } from "./parts/ResultDisplay"
 import { ScoreDisplay } from "./parts/ScoreDisplay"
@@ -20,42 +21,7 @@ export function QuizPage() {
 	if (phase === "finished") {
 		const score = calculateScore(results)
 		const rank = score.total >= 5 ? getRhymeRank(score.correct) : null
-		return (
-			<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-				<Card className="w-full max-w-lg">
-					<CardHeader>
-						<CardTitle className="text-center text-2xl">
-							クイズ終了！
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-6 text-center">
-						<div className="text-6xl font-bold text-purple-600">
-							{score.correct} / {score.total}
-						</div>
-						<div className="text-xl text-gray-600">
-							正解率: {score.percentage}%
-						</div>
-						<div
-							className={`text-lg font-medium ${
-								score.percentage >= 80 ? "text-green-600" : "text-orange-600"
-							}`}
-						>
-							{score.percentage === 100
-								? "パーフェクト！"
-								: score.percentage >= 80
-									? "よくできました！"
-									: score.percentage >= 60
-										? "まあまあです！"
-										: "もう一度挑戦してみよう！"}
-						</div>
-						{rank && <div className="text-2xl font-bold text-purple-700">{rank}</div>}
-						<Button className="w-full" onClick={reset}>
-							もう一度プレイする
-						</Button>
-					</CardContent>
-				</Card>
-			</div>
-		)
+		return <FinalResult score={score} rank={rank} onReset={reset} />
 	}
 
 	if (isLoading) {
