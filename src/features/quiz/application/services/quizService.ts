@@ -19,11 +19,15 @@ export async function getQuestionByIndex(
 	const quiz = allQuizzes[index]
 	if (!quiz) return null
 
+	const shuffledChoices = quiz.choices
+		.map((c) => ({ id: c.id, text: c.text }))
+		.sort(() => Math.random() - 0.5)
+
 	return {
 		id: quiz.id,
 		questionWord: quiz.questionWord,
 		imageKey: quiz.imageKey,
-		choices: quiz.choices.map((c) => ({ id: c.id, text: c.text })),
+		choices: shuffledChoices,
 		total: allQuizzes.length,
 		index,
 	}
