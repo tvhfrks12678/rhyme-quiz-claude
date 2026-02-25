@@ -1,26 +1,26 @@
-import { ImageIcon } from "lucide-react"
+import { ImageIcon } from "lucide-react";
 
-import { Button } from "#/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
+import { Button } from "#/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 
-import type { QuizQuestion } from "../../contracts/quiz"
-import { useQuizStore, useSubmitAnswer } from "../hooks/useQuiz"
-import { ChoiceList } from "./ChoiceList"
+import type { QuizQuestion } from "../../contracts/quiz";
+import { useQuizStore, useSubmitAnswer } from "../hooks/useQuiz";
+import { ChoiceList } from "./ChoiceList";
 
 interface QuizCardProps {
-	question: QuizQuestion
+	question: QuizQuestion;
 }
 
 export function QuizCard({ question }: QuizCardProps) {
-	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds)
-	const submitMutation = useSubmitAnswer()
+	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds);
+	const submitMutation = useSubmitAnswer();
 
 	const handleSubmit = () => {
 		submitMutation.mutate({
 			questionId: question.id,
 			selectedChoiceIds,
-		})
-	}
+		});
+	};
 
 	return (
 		<Card className="w-full">
@@ -41,13 +41,11 @@ export function QuizCard({ question }: QuizCardProps) {
 				<Button
 					className="w-full"
 					onClick={handleSubmit}
-					disabled={
-						selectedChoiceIds.length === 0 || submitMutation.isPending
-					}
+					disabled={selectedChoiceIds.length === 0 || submitMutation.isPending}
 				>
 					{submitMutation.isPending ? "判定中..." : "解答する"}
 				</Button>
 			</CardContent>
 		</Card>
-	)
+	);
 }

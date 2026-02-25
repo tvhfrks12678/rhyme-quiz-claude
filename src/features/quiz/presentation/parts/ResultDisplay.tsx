@@ -1,14 +1,14 @@
-import { CheckCircle, XCircle } from "lucide-react"
+import { CheckCircle, XCircle } from "lucide-react";
 
-import { Badge } from "#/components/ui/badge"
-import { Button } from "#/components/ui/button"
+import { Badge } from "#/components/ui/badge";
+import { Button } from "#/components/ui/button";
 
-import type { SubmitResponse } from "../../contracts/quiz"
+import type { SubmitResponse } from "../../contracts/quiz";
 
 interface ResultDisplayProps {
-	result: SubmitResponse
-	questionWord: string
-	onNext: () => void
+	result: SubmitResponse;
+	questionWord: string;
+	onNext: () => void;
 }
 
 export function ResultDisplay({
@@ -85,5 +85,5 @@ export function ResultDisplay({
 				次の問題へ
 			</Button>
 		</div>
-	)
+	);
 }

@@ -1,11 +1,11 @@
-import { Progress } from "#/components/ui/progress"
+import { Progress } from "#/components/ui/progress";
 
-import { calculateScore } from "../../domain/logic/scoring"
+import { calculateScore } from "../../domain/logic/scoring";
 
 interface ScoreDisplayProps {
-	results: Array<{ isCorrect: boolean }>
-	currentIndex: number
-	total: number
+	results: Array<{ isCorrect: boolean }>;
+	currentIndex: number;
+	total: number;
 }
 
 export function ScoreDisplay({
@@ -13,8 +13,8 @@ export function ScoreDisplay({
 	currentIndex,
 	total,
 }: ScoreDisplayProps) {
-	const score = calculateScore(results)
-	const progress = Math.round((results.length / total) * 100)
+	const score = calculateScore(results);
+	const progress = Math.round((results.length / total) * 100);
 
 	return (
 		<div className="space-y-2">
@@ -28,5 +28,5 @@ export function ScoreDisplay({
 			</div>
 			<Progress value={progress} className="h-2 transition-all duration-500" />
 		</div>
-	)
+	);
 }

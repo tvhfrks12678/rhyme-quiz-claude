@@ -1,6 +1,6 @@
-import type { QuizFull } from "../entities/quiz"
+import type { QuizFull } from "../entities/quiz";
 
 export interface QuizRepository {
-	findAllQuestions(): Promise<QuizFull[]>
-	findFullById(id: string): Promise<QuizFull | null>
+	findAllQuestions(): Promise<QuizFull[]>;
+	findFullById(id: string): Promise<QuizFull | null>;
 }

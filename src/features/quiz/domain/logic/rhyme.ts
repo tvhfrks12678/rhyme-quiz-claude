@@ -1,4 +1,4 @@
-import type { QuizFull, QuizResult } from "../entities/quiz"
+import type { QuizFull, QuizResult } from "../entities/quiz";
 
 const VOWEL_MAP: Record<string, string> = {
 	// あ段
@@ -78,24 +78,22 @@ const VOWEL_MAP: Record<string, string> = {
 	ぽ: "お",
 	// ん
 	ん: "ん",
-}
+};
 
 export function extractVowels(text: string): string {
-	return [...text]
-		.map((char) => VOWEL_MAP[char] ?? "")
-		.join("")
+	return [...text].map((char) => VOWEL_MAP[char] ?? "").join("");
 }
 
 export function judgeAnswer(quiz: QuizFull, selectedIds: string[]): QuizResult {
 	const correctChoiceIds = quiz.choices
 		.filter((c) => c.isCorrect)
-		.map((c) => c.id)
+		.map((c) => c.id);
 
-	const correctSet = new Set(correctChoiceIds)
+	const correctSet = new Set(correctChoiceIds);
 
 	const isCorrect =
 		selectedIds.length === correctChoiceIds.length &&
-		selectedIds.every((id) => correctSet.has(id))
+		selectedIds.every((id) => correctSet.has(id));
 
 	return {
 		isCorrect,
@@ -108,5 +106,5 @@ export function judgeAnswer(quiz: QuizFull, selectedIds: string[]): QuizResult {
 			vowels: c.vowels,
 			isCorrect: correctSet.has(c.id),
 		})),
-	}
+	};
 }
