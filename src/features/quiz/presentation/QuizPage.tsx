@@ -1,7 +1,7 @@
 import { Button } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 
-import { calculateScore } from "../domain/logic/scoring"
+import { calculateScore, getRhymeRank } from "../domain/logic/scoring"
 import { useCurrentQuestion, useQuizStore } from "./hooks/useQuiz"
 import { QuizCard } from "./parts/QuizCard"
 import { ResultDisplay } from "./parts/ResultDisplay"
@@ -19,6 +19,7 @@ export function QuizPage() {
 
 	if (phase === "finished") {
 		const score = calculateScore(results)
+		const rank = score.total >= 5 ? getRhymeRank(score.correct) : null
 		return (
 			<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
 				<Card className="w-full max-w-lg">
@@ -47,6 +48,7 @@ export function QuizPage() {
 										? "まあまあです！"
 										: "もう一度挑戦してみよう！"}
 						</div>
+						{rank && <div className="text-2xl font-bold text-purple-700">{rank}</div>}
 						<Button className="w-full" onClick={reset}>
 							もう一度プレイする
 						</Button>
