@@ -1,30 +1,30 @@
-import { Button } from "#/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
-import type { ScoreResult } from "../../domain/logic/scoring"
+import { Button } from "#/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import type { ScoreResult } from "../../domain/logic/scoring";
 
 interface FinalResultProps {
-	score: ScoreResult
-	rank: string | null
-	onReset: () => void
+	score: ScoreResult;
+	rank: string | null;
+	onReset: () => void;
 }
 
 export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 	const getRankColor = (rankName: string) => {
 		switch (rankName) {
 			case "韻の神":
-				return "from-yellow-400 via-amber-200 to-yellow-600 text-yellow-950 shadow-[0_0_20px_rgba(251,191,36,0.5)] border-yellow-300"
+				return "from-yellow-400 via-amber-200 to-yellow-600 text-yellow-950 shadow-[0_0_20px_rgba(251,191,36,0.5)] border-yellow-300";
 			case "韻の皇帝":
-				return "from-purple-600 to-indigo-700 text-white shadow-purple-200"
+				return "from-purple-600 to-indigo-700 text-white shadow-purple-200";
 			case "韻のプロ":
-				return "from-blue-500 to-blue-700 text-white"
+				return "from-blue-500 to-blue-700 text-white";
 			case "韻の黒帯":
-				return "from-gray-700 to-gray-900 text-white"
+				return "from-gray-700 to-gray-900 text-white";
 			case "韻の見習い":
-				return "from-green-400 to-green-600 text-white"
+				return "from-green-400 to-green-600 text-white";
 			default:
-				return "from-gray-300 to-gray-400 text-gray-800"
+				return "from-gray-300 to-gray-400 text-gray-800";
 		}
-	}
+	};
 
 	return (
 		<div className="min-h-[80vh] flex items-center justify-center p-4">
@@ -45,12 +45,15 @@ export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 							Final Score
 						</div>
 						<div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-purple-600 to-purple-900 drop-shadow-sm">
-							{score.correct} <span className="text-3xl text-gray-300">/ {score.total}</span>
+							{score.correct}{" "}
+							<span className="text-3xl text-gray-300">/ {score.total}</span>
 						</div>
 					</div>
 
 					<div className="flex flex-col items-center gap-4 py-4 relative">
-						<div className="text-sm font-bold text-gray-400 uppercase tracking-widest">称号</div>
+						<div className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+							称号
+						</div>
 						{rank ? (
 							<div
 								className={`
@@ -108,5 +111,5 @@ export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 				}
 			`}</style>
 		</div>
-	)
+	);
 }

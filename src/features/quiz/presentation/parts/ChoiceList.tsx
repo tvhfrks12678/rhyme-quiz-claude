@@ -1,15 +1,15 @@
-import { Checkbox } from "#/components/ui/checkbox"
+import { Checkbox } from "#/components/ui/checkbox";
 
-import type { Choice } from "../../contracts/quiz"
-import { useQuizStore } from "../hooks/useQuiz"
+import type { Choice } from "../../contracts/quiz";
+import { useQuizStore } from "../hooks/useQuiz";
 
 interface ChoiceListProps {
-	choices: Choice[]
+	choices: Choice[];
 }
 
 export function ChoiceList({ choices }: ChoiceListProps) {
-	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds)
-	const toggleChoice = useQuizStore((s) => s.toggleChoice)
+	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds);
+	const toggleChoice = useQuizStore((s) => s.toggleChoice);
 
 	return (
 		<div className="space-y-3">
@@ -17,13 +17,6 @@ export function ChoiceList({ choices }: ChoiceListProps) {
 				<div
 					key={choice.id}
 					className="flex items-center gap-3 p-3 rounded-lg border hover:bg-gray-50 cursor-pointer transition-colors"
-					onClick={() => toggleChoice(choice.id)}
-					onKeyDown={(e) => {
-						if (e.key === "Enter" || e.key === " ") toggleChoice(choice.id)
-					}}
-					role="checkbox"
-					aria-checked={selectedChoiceIds.includes(choice.id)}
-					tabIndex={0}
 				>
 					<Checkbox
 						id={choice.id}
@@ -40,5 +33,5 @@ export function ChoiceList({ choices }: ChoiceListProps) {
 				</div>
 			))}
 		</div>
-	)
+	);
 }

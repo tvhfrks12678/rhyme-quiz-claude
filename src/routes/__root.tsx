@@ -1,12 +1,12 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { TanStackDevtools } from "@tanstack/react-devtools"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { useState } from "react"
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { useState } from "react";
 
-import Header from "../components/Header"
+import Header from "../components/Header";
 
-import appCss from "../styles.css?url"
+import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -30,7 +30,7 @@ export const Route = createRootRoute({
 		],
 	}),
 	shellComponent: RootDocument,
-})
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	const [queryClient] = useState(
@@ -42,7 +42,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 					},
 				},
 			}),
-	)
+	);
 
 	return (
 		<html lang="ja">
@@ -68,5 +68,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<Scripts />
 			</body>
 		</html>
-	)
+	);
 }
