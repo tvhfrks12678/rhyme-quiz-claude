@@ -3,11 +3,12 @@
 - 問題文（例:「とら」）と同じ母音パターンを持つ選択肢を選ぶゲームです
 - AIにコードを書かせて実装
 
-<img width="250" height="675" alt="スクリーンショット 2026-02-23 16 42 33" src="https://github.com/user-attachments/assets/04f53492-d269-4a95-92c0-096a6382cd0e" />
+<img width="250" alt="スクリーンショット 2026-02-26 0 21 17" src="https://github.com/user-attachments/assets/011fe1bd-92eb-456c-9166-c3f5211a4462" />
 <br>
-<img width="250" height="490" alt="スクリーンショット 2026-02-23 16 42 55" src="https://github.com/user-attachments/assets/64ecbac4-af29-4d7d-a367-2d889c574f46" />
+<img width="250" alt="スクリーンショット 2026-02-26 0 46 29" src="https://github.com/user-attachments/assets/00f4b646-ab1c-43ca-bf14-d59c7e93557b" />
 <br>
-<img width="250" height="543" alt="スクリーンショット 2026-02-25 23 39 11" src="https://github.com/user-attachments/assets/06aac1ad-33d0-4bb9-8dbc-ee0195da0e64" />
+<img width="250" alt="スクリーンショット 2026-02-26 0 48 13" src="https://github.com/user-attachments/assets/2a9b7e8b-2a99-4108-8bcc-ca91e6b8d662" />
+<br>
 
 
 # URL
