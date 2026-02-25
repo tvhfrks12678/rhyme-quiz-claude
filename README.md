@@ -18,6 +18,7 @@
 - サーバーデータ取得: TanStack Query
 - バリデーション: zod
 - UI: shadcn/ui + Tailwind CSS v4
+- AI: Claude Code Codex
 - インフラ: Cloudflare Workers
 
 ---
