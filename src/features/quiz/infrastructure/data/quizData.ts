@@ -13,68 +13,68 @@ export const quizzes: QuizFull[] = [
 			{ id: "q1-c2", text: "ぶた", vowels: "うあ", isCorrect: false },
 		],
 	},
-	// Q2: 3文字・3択
+	// Q2: 3文字・3択（正解2つ）
 	{
 		id: "q2",
 		questionWord: "くるま",
 		questionVowels: "ううあ",
 		imageKey: "kuruma",
 		explanation:
-			"「くるま」の母音は「ううあ」。同じ母音パターンの「つくば」が正解。",
+			"「くるま」の母音は「ううあ」。同じ母音パターンの「つくば」「くつわ」が正解。",
 		choices: [
 			{ id: "q2-c1", text: "つくば", vowels: "ううあ", isCorrect: true },
-			{ id: "q2-c2", text: "さくら", vowels: "あうあ", isCorrect: false },
+			{ id: "q2-c2", text: "くつわ", vowels: "ううあ", isCorrect: true },
 			{ id: "q2-c3", text: "みどり", vowels: "いおい", isCorrect: false },
 		],
 	},
-	// Q3: 4文字・4択
+	// Q3: 4文字・4択（正解3つ）
 	{
 		id: "q3",
 		questionWord: "うみかぜ",
 		questionVowels: "ういあえ",
 		imageKey: "umikaze",
 		explanation:
-			"「うみかぜ」の母音は「ういあえ」。同じ母音パターンの「つきかげ」が正解。",
+			"「うみかぜ」の母音は「ういあえ」。同じ母音パターンの「つきかげ」「くびかけ」「ぐりかえ」が正解。",
 		choices: [
 			{ id: "q3-c1", text: "つきかげ", vowels: "ういあえ", isCorrect: true },
-			{ id: "q3-c2", text: "はなびら", vowels: "ああいあ", isCorrect: false },
-			{ id: "q3-c3", text: "ひまわり", vowels: "いああい", isCorrect: false },
+			{ id: "q3-c2", text: "くびかけ", vowels: "ういあえ", isCorrect: true },
+			{ id: "q3-c3", text: "ぐりかえ", vowels: "ういあえ", isCorrect: true },
 			{ id: "q3-c4", text: "すずらん", vowels: "ううあん", isCorrect: false },
 		],
 	},
-	// Q4: 6文字・8択
+	// Q4: 6文字・8択（正解4つ）
 	{
 		id: "q4",
 		questionWord: "むかしばなし",
 		questionVowels: "うあいああい",
 		imageKey: "mukashibanashi",
 		explanation:
-			"「むかしばなし」の母音は「うあいああい」。同じ母音パターンの「つかいはたし」が正解。",
+			"「むかしばなし」の母音は「うあいああい」。同じ母音パターンの「つかいはたし」「ふかいはなし」「くさいかかし」「むかしかがみ」が正解。",
 		choices: [
 			{ id: "q4-c1", text: "つかいはたし", vowels: "うあいああい", isCorrect: true },
-			{ id: "q4-c2", text: "まつりばやし", vowels: "あういああい", isCorrect: false },
-			{ id: "q4-c3", text: "なつのおもい", vowels: "あうおおおい", isCorrect: false },
-			{ id: "q4-c4", text: "そらとぶかぜ", vowels: "おあおうあえ", isCorrect: false },
+			{ id: "q4-c2", text: "ふかいはなし", vowels: "うあいああい", isCorrect: true },
+			{ id: "q4-c3", text: "くさいかかし", vowels: "うあいああい", isCorrect: true },
+			{ id: "q4-c4", text: "むかしかがみ", vowels: "うあいああい", isCorrect: true },
 			{ id: "q4-c5", text: "ゆうひのかぜ", vowels: "うういおあえ", isCorrect: false },
 			{ id: "q4-c6", text: "きのこのかさ", vowels: "いおおおああ", isCorrect: false },
 			{ id: "q4-c7", text: "おにのぱんつ", vowels: "おいおあんう", isCorrect: false },
 			{ id: "q4-c8", text: "たのしいうた", vowels: "あおいいうあ", isCorrect: false },
 		],
 	},
-	// Q5: 10文字・15択（上級）
+	// Q5: 10文字・15択（上級・正解5つ）
 	{
 		id: "q5",
 		questionWord: "むかしむかしのはなし",
 		questionVowels: "うあいうあいおああい",
 		imageKey: "mukashimukashinohanashi",
 		explanation:
-			"「むかしむかしのはなし」の母音は「うあいうあいおああい」。同じ母音パターンの「ふかいふかいのはなし」が正解。",
+			"「むかしむかしのはなし」の母音は「うあいうあいおああい」。同じ母音パターンの「ふかいふかいのはなし」「ゆかいゆかいのかかし」「むかいむかいのかがみ」「つかいつかいのたたみ」「くさいくさいのかかし」が正解。",
 		choices: [
 			{ id: "q5-c1", text: "ふかいふかいのはなし", vowels: "うあいうあいおああい", isCorrect: true },
-			{ id: "q5-c2", text: "いつもそばにいるよね", vowels: "いうおおあいいうおえ", isCorrect: false },
-			{ id: "q5-c3", text: "このよるをこえていけ", vowels: "おおおうおおええいえ", isCorrect: false },
-			{ id: "q5-c4", text: "あかいめがさすほどに", vowels: "ああいえああうおおい", isCorrect: false },
-			{ id: "q5-c5", text: "さいごまでそこにいろ", vowels: "あいおあえおおいいお", isCorrect: false },
+			{ id: "q5-c2", text: "ゆかいゆかいのかかし", vowels: "うあいうあいおああい", isCorrect: true },
+			{ id: "q5-c3", text: "むかいむかいのかがみ", vowels: "うあいうあいおああい", isCorrect: true },
+			{ id: "q5-c4", text: "つかいつかいのたたみ", vowels: "うあいうあいおああい", isCorrect: true },
+			{ id: "q5-c5", text: "くさいくさいのかかし", vowels: "うあいうあいおああい", isCorrect: true },
 			{ id: "q5-c6", text: "はなれてもそばにいる", vowels: "ああええおおあいいう", isCorrect: false },
 			{ id: "q5-c7", text: "うたのそらをとびかけ", vowels: "うあおおあおおいあえ", isCorrect: false },
 			{ id: "q5-c8", text: "きみのこえがきこえる", vowels: "いいおおえあいおえう", isCorrect: false },
