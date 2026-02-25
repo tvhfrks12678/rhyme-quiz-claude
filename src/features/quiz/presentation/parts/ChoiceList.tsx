@@ -17,6 +17,7 @@ export function ChoiceList({ choices }: ChoiceListProps) {
 				<div
 					key={choice.id}
 					className="flex items-center gap-3 p-3 rounded-lg border hover:bg-gray-50 cursor-pointer transition-colors"
+					onClick={() => toggleChoice(choice.id)}
 				>
 					<Checkbox
 						id={choice.id}
