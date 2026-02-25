@@ -2,12 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { Home, Menu, Music, X } from "lucide-react";
 import { useState } from "react";
 
+import { AnimatedGradientText } from "#/components/magicui/animated-gradient-text";
+
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<>
-			<header className="p-4 flex items-center bg-gray-800 text-white shadow-lg">
+			<header className="p-4 flex items-center bg-gray-900 text-white shadow-lg border-b border-white/10">
 				<button
 					type="button"
 					onClick={() => setIsOpen(true)}
@@ -16,8 +18,16 @@ export default function Header() {
 				>
 					<Menu size={24} />
 				</button>
-				<h1 className="ml-4 text-2xl font-semibold">
-					<Link to="/">Rhyme Quiz</Link>
+				<h1 className="ml-4 text-2xl font-bold">
+					<Link to="/">
+						<AnimatedGradientText
+							colorFrom="#a855f7"
+							colorTo="#ec4899"
+							speed={1.2}
+						>
+							Rhyme Quiz
+						</AnimatedGradientText>
+					</Link>
 				</h1>
 			</header>
 
@@ -45,7 +55,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								"flex items-center gap-3 p-3 rounded-lg bg-purple-700 hover:bg-purple-800 transition-colors mb-2",
 						}}
 					>
 						<Home size={20} />
@@ -58,7 +68,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								"flex items-center gap-3 p-3 rounded-lg bg-purple-700 hover:bg-purple-800 transition-colors mb-2",
 						}}
 					>
 						<Music size={20} />
