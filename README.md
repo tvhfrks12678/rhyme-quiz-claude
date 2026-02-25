@@ -9,7 +9,7 @@
 
 
 # URL
-  - [韻クイズ](https://rhyme-quiz-claude.tvhfrks12678.workers.dev/quiz)
+  - [韻クイズ](https://rhyme-quiz-claude.tvhfrks12678.workers.dev/)
 
 # 技術スタック
 - 言語: TypeScript
