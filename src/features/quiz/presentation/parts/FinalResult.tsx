@@ -27,9 +27,9 @@ export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 	}
 
 	return (
-		<div className="min-h-[80vh] flex items-center justify-center p-4">
+		<div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-pink-50 via-purple-50 to-pink-100">
 			<Card className="w-full max-w-lg overflow-hidden border-2 border-purple-100 shadow-2xl animate-in fade-in zoom-in duration-500">
-				<CardHeader className="bg-gradient-to-r from-purple-100 via-pink-50 to-purple-100 border-b border-purple-100">
+				<CardHeader className="min-h-28 flex items-center justify-center bg-gradient-to-r from-purple-100 via-pink-50 to-purple-100 border-b border-purple-100">
 					<CardTitle className="text-center text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
 						RESULT
 					</CardTitle>
