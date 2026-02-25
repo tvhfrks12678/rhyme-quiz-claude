@@ -1,5 +1,6 @@
-import { Button } from "#/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { AnimatedShinyText } from "#/components/magicui/animated-shiny-text";
+import { ShimmerButton } from "#/components/magicui/shimmer-button";
+import { Card, CardContent, CardHeader } from "#/components/ui/card";
 import type { ScoreResult } from "../../domain/logic/scoring";
 
 interface FinalResultProps {
@@ -27,12 +28,17 @@ export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 	};
 
 	return (
-		<div className="min-h-[80vh] flex items-center justify-center p-4">
+		<div className="min-h-screen bg-pink-50 flex items-center justify-center p-4">
 			<Card className="w-full max-w-lg overflow-hidden border-2 border-purple-100 shadow-2xl animate-in fade-in zoom-in duration-500">
-				<CardHeader className="bg-gradient-to-r from-purple-100 via-pink-50 to-purple-100 border-b border-purple-100">
-					<CardTitle className="text-center text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-						RESULT
-					</CardTitle>
+				<CardHeader className="bg-gradient-to-r from-purple-100 via-pink-50 to-purple-100 border-b border-purple-100 py-6">
+					<div className="text-center">
+						<AnimatedShinyText
+							shimmerWidth={160}
+							className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 via-purple-500"
+						>
+							RESULT
+						</AnimatedShinyText>
+					</div>
 				</CardHeader>
 				<CardContent className="space-y-8 p-8 text-center relative">
 					{rank === "韻の神" && (
@@ -94,13 +100,17 @@ export function FinalResult({ score, rank, onReset }: FinalResultProps) {
 									: "リベンジ待ってるぜ！"}
 					</div>
 
-					<Button
-						size="lg"
-						className="w-full h-16 text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-purple-200/50 active:scale-[0.98]"
+					<ShimmerButton
+						type="button"
+						className="w-full h-16 text-xl font-bold"
+						background="linear-gradient(135deg, #7c3aed, #db2777)"
+						borderRadius="0.5rem"
+						shimmerColor="#ffffff"
+						shimmerDuration="2.5s"
 						onClick={onReset}
 					>
 						もう一度挑戦する
-					</Button>
+					</ShimmerButton>
 				</CardContent>
 			</Card>
 			<style>{`

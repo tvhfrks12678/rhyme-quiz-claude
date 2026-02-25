@@ -1,6 +1,7 @@
 import { ImageIcon } from "lucide-react";
 
-import { Button } from "#/components/ui/button";
+import { ShimmerButton } from "#/components/magicui/shimmer-button";
+import { ShineBorder } from "#/components/magicui/shine-border";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 
 import type { QuizQuestion } from "../../contracts/quiz";
@@ -23,29 +24,43 @@ export function QuizCard({ question }: QuizCardProps) {
 	};
 
 	return (
-		<Card className="w-full">
-			<CardHeader>
-				<CardTitle className="text-center text-xl">
-					「{question.questionWord}」で踏める韻は？
-				</CardTitle>
-			</CardHeader>
-			<CardContent className="space-y-6">
-				<div className="flex justify-center">
-					<div className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
-						<ImageIcon className="w-12 h-12 text-gray-400" />
+		<div className="relative">
+			<ShineBorder
+				borderWidth={2}
+				duration={10}
+				shineColor={["#a855f7", "#ec4899", "#6366f1"]}
+			/>
+			<Card className="w-full">
+				<CardHeader>
+					<CardTitle className="text-center text-xl">
+						「{question.questionWord}」で踏める韻は？
+					</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-6">
+					<div className="flex justify-center">
+						<div className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+							<ImageIcon className="w-12 h-12 text-gray-400" />
+						</div>
 					</div>
-				</div>
 
-				<ChoiceList choices={question.choices} />
+					<ChoiceList choices={question.choices} />
 
-				<Button
-					className="w-full"
-					onClick={handleSubmit}
-					disabled={selectedChoiceIds.length === 0 || submitMutation.isPending}
-				>
-					{submitMutation.isPending ? "判定中..." : "解答する"}
-				</Button>
-			</CardContent>
-		</Card>
+					<ShimmerButton
+						type="button"
+						className="w-full h-12 text-base font-bold"
+						background="linear-gradient(135deg, #7c3aed, #db2777)"
+						borderRadius="0.5rem"
+						shimmerColor="#ffffff"
+						shimmerDuration="2.5s"
+						onClick={handleSubmit}
+						disabled={
+							selectedChoiceIds.length === 0 || submitMutation.isPending
+						}
+					>
+						{submitMutation.isPending ? "判定中..." : "解答する"}
+					</ShimmerButton>
+				</CardContent>
+			</Card>
+		</div>
 	);
 }
