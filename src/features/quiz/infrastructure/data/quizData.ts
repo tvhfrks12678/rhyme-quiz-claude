@@ -13,18 +13,20 @@ export const quizzes: QuizFull[] = [
 			{ id: "q1-c2", text: "ぶた", vowels: "うあ", isCorrect: false },
 		],
 	},
-	// Q2: 3文字・3択（正解2つ）
+	// Q2: 3文字・4択（正解2つ・動画あり）
 	{
 		id: "q2",
-		questionWord: "くるま",
-		questionVowels: "ううあ",
-		imageKey: "kuruma",
+		questionWord: "あたま",
+		questionVowels: "あああ",
+		imageKey: "",
+		videoKey: "20260226_1254_01kjb86c8mf86rdf15zcrvc52b",
 		explanation:
-			"「くるま」の母音は「ううあ」。同じ母音パターンの「つくば」「くつわ」が正解。",
+			"「あたま」の母音は「あああ」。同じ母音パターンの「からだ」「ながら」が正解。",
 		choices: [
-			{ id: "q2-c1", text: "つくば", vowels: "ううあ", isCorrect: true },
-			{ id: "q2-c2", text: "くつわ", vowels: "ううあ", isCorrect: true },
-			{ id: "q2-c3", text: "みどり", vowels: "いおい", isCorrect: false },
+			{ id: "q2-c1", text: "からだ", vowels: "あああ", isCorrect: true },
+			{ id: "q2-c2", text: "ながら", vowels: "あああ", isCorrect: true },
+			{ id: "q2-c3", text: "つかい", vowels: "うあい", isCorrect: false },
+			{ id: "q2-c4", text: "にして", vowels: "いいえ", isCorrect: false },
 		],
 	},
 	// Q3: 4文字・4択（正解3つ）

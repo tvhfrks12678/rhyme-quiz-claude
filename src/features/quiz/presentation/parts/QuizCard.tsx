@@ -37,11 +37,21 @@ export function QuizCard({ question }: QuizCardProps) {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					<div className="flex justify-center">
-						<div className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
-							<ImageIcon className="w-12 h-12 text-gray-400" />
+					{question.videoUrl ? (
+						<div className="flex justify-center">
+							<video
+								src={question.videoUrl}
+								controls
+								className="w-full max-w-sm rounded-lg"
+							/>
 						</div>
-					</div>
+					) : (
+						<div className="flex justify-center">
+							<div className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+								<ImageIcon className="w-12 h-12 text-gray-400" />
+							</div>
+						</div>
+					)}
 
 					<ChoiceList choices={question.choices} />
 
