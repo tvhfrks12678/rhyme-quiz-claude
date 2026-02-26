@@ -9,6 +9,7 @@ export const QuizQuestionSchema = z.object({
 	id: z.string(),
 	questionWord: z.string(),
 	imageKey: z.string(),
+	videoUrl: z.string().optional(),
 	choices: z.array(ChoiceSchema),
 	total: z.number(),
 	index: z.number(),

@@ -10,6 +10,7 @@ export interface QuizFull {
 	questionWord: string;
 	questionVowels: string;
 	imageKey: string;
+	videoKey?: string;
 	explanation: string;
 	choices: ChoiceFull[];
 }
