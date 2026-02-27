@@ -1,4 +1,4 @@
-import { ImageIcon, MonitorPlay, Type } from "lucide-react";
+import { ArrowDown, ImageIcon, MonitorPlay, Type } from "lucide-react";
 import { useState } from "react";
 
 import { ShimmerButton } from "#/components/magicui/shimmer-button";
@@ -9,23 +9,26 @@ import type { QuizQuestion } from "../../contracts/quiz";
 import { useQuizStore, useSubmitAnswer } from "../hooks/useQuiz";
 import { ChoiceList } from "./ChoiceList";
 import { RomajiMarquee } from "./RomajiMarquee";
+import { RomajiVerticalMarquee } from "./RomajiVerticalMarquee";
 
 interface QuizCardProps {
 	question: QuizQuestion;
 }
 
-type DisplayMode = "marquee" | "image" | "video";
+type DisplayMode = "vertical-marquee" | "marquee" | "image" | "video";
 
 export function QuizCard({ question }: QuizCardProps) {
 	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds);
 	const submitMutation = useSubmitAnswer();
 	const [imageError, setImageError] = useState(false);
 
-	const initialMode: DisplayMode = question.marqueeMode
-		? "marquee"
-		: question.videoUrl
-			? "video"
-			: "image";
+	const initialMode: DisplayMode = question.verticalMarqueeMode
+		? "vertical-marquee"
+		: question.marqueeMode
+			? "marquee"
+			: question.videoUrl
+				? "video"
+				: "image";
 	const [displayMode, setDisplayMode] = useState<DisplayMode>(initialMode);
 
 	const handleSubmit = () => {
@@ -38,8 +41,15 @@ export function QuizCard({ question }: QuizCardProps) {
 	const hasImage = Boolean(question.imageUrl) && !imageError;
 	const hasVideo = Boolean(question.videoUrl);
 	const hasMarquee = Boolean(question.marqueeMode);
+	const hasVerticalMarquee = Boolean(question.verticalMarqueeMode);
 
-	const showToggle = hasMarquee && (hasImage || hasVideo);
+	const availableModes = [
+		hasVerticalMarquee && "vertical-marquee",
+		hasMarquee && "marquee",
+		hasVideo && "video",
+		hasImage && "image",
+	].filter(Boolean) as DisplayMode[];
+	const showToggle = availableModes.length > 1;
 
 	return (
 		<div className="relative">
@@ -57,19 +67,36 @@ export function QuizCard({ question }: QuizCardProps) {
 				<CardContent className="space-y-6">
 					{showToggle && (
 						<div className="flex justify-end gap-2">
-							<button
-								type="button"
-								onClick={() => setDisplayMode("marquee")}
-								className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
-									displayMode === "marquee"
-										? "bg-green-600 text-white"
-										: "bg-gray-200 text-gray-600 hover:bg-gray-300"
-								}`}
-								aria-label="ローマ字スクロール表示"
-							>
-								<Type className="w-3 h-3" />
-								ローマ字
-							</button>
+							{hasVerticalMarquee && (
+								<button
+									type="button"
+									onClick={() => setDisplayMode("vertical-marquee")}
+									className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+										displayMode === "vertical-marquee"
+											? "bg-green-600 text-white"
+											: "bg-gray-200 text-gray-600 hover:bg-gray-300"
+									}`}
+									aria-label="ローマ字縦スクロール表示"
+								>
+									<ArrowDown className="w-3 h-3" />
+									縦ローマ字
+								</button>
+							)}
+							{hasMarquee && (
+								<button
+									type="button"
+									onClick={() => setDisplayMode("marquee")}
+									className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+										displayMode === "marquee"
+											? "bg-green-600 text-white"
+											: "bg-gray-200 text-gray-600 hover:bg-gray-300"
+									}`}
+									aria-label="ローマ字横スクロール表示"
+								>
+									<Type className="w-3 h-3" />
+									横ローマ字
+								</button>
+							)}
 							{hasVideo && (
 								<button
 									type="button"
@@ -103,7 +130,12 @@ export function QuizCard({ question }: QuizCardProps) {
 						</div>
 					)}
 
-					{displayMode === "marquee" && hasMarquee ? (
+					{displayMode === "vertical-marquee" && hasVerticalMarquee ? (
+						<RomajiVerticalMarquee
+							questionWord={question.questionWord}
+							choices={question.choices}
+						/>
+					) : displayMode === "marquee" && hasMarquee ? (
 						<RomajiMarquee
 							questionWord={question.questionWord}
 							choices={question.choices}
@@ -127,7 +159,7 @@ export function QuizCard({ question }: QuizCardProps) {
 								onError={() => setImageError(true)}
 							/>
 						</div>
-					) : !hasMarquee && !hasVideo && !hasImage ? (
+					) : !hasVerticalMarquee && !hasMarquee && !hasVideo && !hasImage ? (
 						<div className="flex justify-center">
 							<div
 								className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300"

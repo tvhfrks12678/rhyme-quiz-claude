@@ -12,6 +12,7 @@ export const QuizQuestionSchema = z.object({
 	imageUrl: z.string().optional(),
 	videoUrl: z.string().optional(),
 	marqueeMode: z.boolean().optional(),
+	verticalMarqueeMode: z.boolean().optional(),
 	choices: z.array(ChoiceSchema),
 	total: z.number(),
 	index: z.number(),
