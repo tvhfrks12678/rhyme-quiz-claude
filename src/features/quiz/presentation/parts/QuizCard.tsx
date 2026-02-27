@@ -1,4 +1,5 @@
 import { ImageIcon } from "lucide-react";
+import { useState } from "react";
 
 import { ShimmerButton } from "#/components/magicui/shimmer-button";
 import { ShineBorder } from "#/components/magicui/shine-border";
@@ -15,6 +16,7 @@ interface QuizCardProps {
 export function QuizCard({ question }: QuizCardProps) {
 	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds);
 	const submitMutation = useSubmitAnswer();
+	const [imageError, setImageError] = useState(false);
 
 	const handleSubmit = () => {
 		submitMutation.mutate({
@@ -22,6 +24,9 @@ export function QuizCard({ question }: QuizCardProps) {
 			selectedChoiceIds,
 		});
 	};
+
+	const showImage = question.imageUrl && !imageError;
+	const showPlaceholder = !question.videoUrl && !showImage;
 
 	return (
 		<div className="relative">
@@ -46,7 +51,17 @@ export function QuizCard({ question }: QuizCardProps) {
 								data-testid="video-player"
 							/>
 						</div>
-					) : (
+					) : showImage ? (
+						<div className="flex justify-center">
+							<img
+								src={question.imageUrl}
+								alt={question.questionWord}
+								className="w-40 h-40 object-cover rounded-lg"
+								data-testid="image-display"
+								onError={() => setImageError(true)}
+							/>
+						</div>
+					) : showPlaceholder ? (
 						<div className="flex justify-center">
 							<div
 								className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300"
@@ -55,7 +70,7 @@ export function QuizCard({ question }: QuizCardProps) {
 								<ImageIcon className="w-12 h-12 text-gray-400" />
 							</div>
 						</div>
-					)}
+					) : null}
 
 					<ChoiceList choices={question.choices} />
 
