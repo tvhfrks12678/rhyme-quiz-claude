@@ -52,13 +52,13 @@ describe("resolveImageUrl", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("IMAGE_PROVIDER 未設定のとき /images/${key}.jpg を返す", () => {
-		expect(resolveImageUrl("tora")).toBe("/images/tora.jpg");
+	it("IMAGE_PROVIDER 未設定のとき /image/${key}.jpg を返す", () => {
+		expect(resolveImageUrl("tora")).toBe("/image/tora.jpg");
 	});
 
-	it("IMAGE_PROVIDER=local のとき /images/${key}.jpg を返す", () => {
+	it("IMAGE_PROVIDER=local のとき /image/${key}.jpg を返す", () => {
 		vi.stubEnv("IMAGE_PROVIDER", "local");
-		expect(resolveImageUrl("tora")).toBe("/images/tora.jpg");
+		expect(resolveImageUrl("tora")).toBe("/image/tora.jpg");
 	});
 
 	it("IMAGE_PROVIDER=cloudinary のとき Cloudinary 画像 URL を返す", () => {

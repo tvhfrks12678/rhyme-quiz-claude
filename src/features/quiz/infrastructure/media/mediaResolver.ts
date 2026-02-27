@@ -30,6 +30,6 @@ export function resolveImageUrl(key: string): string {
 			return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${key}.jpg`;
 		case "local":
 		default:
-			return `/images/${key}.jpg`;
+			return `/image/${key}.jpg`;
 	}
 }

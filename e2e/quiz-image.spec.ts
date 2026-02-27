@@ -16,7 +16,7 @@ test.describe("クイズ画像表示", () => {
 
 		// src 属性が画像ファイルを指していることを確認
 		const src = await img.getAttribute("src");
-		expect(src).toBe("/images/tora.jpg");
+		expect(src).toBe("/image/tora.jpg");
 	});
 
 	test("Q2 では動画が優先され、画像は表示されない", async ({ page }) => {

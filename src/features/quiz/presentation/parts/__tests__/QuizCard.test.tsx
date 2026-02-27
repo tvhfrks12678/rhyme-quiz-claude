@@ -54,7 +54,7 @@ const questionWithImage: QuizQuestion = {
 	id: "q1",
 	questionWord: "とら",
 	imageKey: "tora",
-	imageUrl: "/images/tora.jpg",
+	imageUrl: "/image/tora.jpg",
 	choices: [
 		{ id: "c1", text: "おか" },
 		{ id: "c2", text: "ぶた" },
@@ -119,7 +119,7 @@ describe("QuizCard", () => {
 			renderWithProviders(<QuizCard question={questionWithImage} />);
 
 			const img = screen.getByTestId("question-image");
-			expect(img).toHaveAttribute("src", "/images/tora.jpg");
+			expect(img).toHaveAttribute("src", "/image/tora.jpg");
 		});
 
 		it("imageUrl の <img> は alt 属性に questionWord を持つ", () => {

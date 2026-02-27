@@ -22,11 +22,11 @@
 ```
 quizData.ts (imageKey: "tora")
     ↓
-quizService.ts → resolveImageUrl("tora") → "/images/tora.jpg"
+quizService.ts → resolveImageUrl("tora") → "/image/tora.jpg"
     ↓
-API レスポンス (imageUrl: "/images/tora.jpg")
+API レスポンス (imageUrl: "/image/tora.jpg")
     ↓
-QuizCard.tsx → <img src="/images/tora.jpg" />
+QuizCard.tsx → <img src="/image/tora.jpg" />
 ```
 
 ---
@@ -45,13 +45,13 @@ QuizCard.tsx → <img src="/images/tora.jpg" />
 
 | テスト | 期待値 |
 |---|---|
-| `"tora"` を渡す | `"/images/tora.jpg"` |
+| `"tora"` を渡す | `"/image/tora.jpg"` |
 
 #### `IMAGE_PROVIDER` が設定されている場合
 
 | `IMAGE_PROVIDER` 値 | テスト | 期待値 |
 |---|---|---|
-| `local` | `"tora"` を渡す | `"/images/tora.jpg"` |
+| `local` | `"tora"` を渡す | `"/image/tora.jpg"` |
 | `cloudinary` | `"tora"` を渡す（`CLOUDINARY_CLOUD_NAME=mycloud`） | `"https://res.cloudinary.com/mycloud/image/upload/tora.jpg"` |
 | 未設定 | `""` を渡す | `""` （空文字） |
 
@@ -103,7 +103,7 @@ imageUrl あり（動画なし）  → <img> を表示
 | テスト | `data-testid` | 確認内容 |
 |---|---|---|
 | `<img>` が描画される | `question-image` | タグが `IMG` であること |
-| `src` 属性が正しい | `question-image` | `/images/tora.jpg` が設定されること |
+| `src` 属性が正しい | `question-image` | `/image/tora.jpg` が設定されること |
 | `alt` 属性が正しい | `question-image` | `questionWord` が設定されること |
 | `<video>` は非表示 | `video-player` | DOM に存在しないこと |
 | プレースホルダーは非表示 | `image-placeholder` | DOM に存在しないこと |
@@ -126,7 +126,7 @@ imageUrl あり（動画なし）  → <img> を表示
 
 | テスト | 内容 |
 |---|---|
-| Q1 で画像が表示される | `/images/tora.jpg` の `<img>` が表示されること |
+| Q1 で画像が表示される | `/image/tora.jpg` の `<img>` が表示されること |
 | Q2 では動画が優先される | `<video>` が表示され `<img>` は表示されないこと |
 
 ---
@@ -152,6 +152,6 @@ pnpm test src/features/quiz/presentation/parts/__tests__/QuizCard.test.tsx
 
 | imageKey | ファイルパス | 備考 |
 |---|---|---|
-| `tora` | `public/images/tora.jpg` | 1問目（とら） |
+| `tora` | `public/image/tora.jpg` | 1問目（とら） |
 
-追加する場合は `public/images/{imageKey}.jpg` に配置し、`quizData.ts` の `imageKey` に設定する。
+追加する場合は `public/image/{imageKey}.jpg` に配置し、`quizData.ts` の `imageKey` に設定する。
