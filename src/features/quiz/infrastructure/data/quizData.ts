@@ -51,6 +51,8 @@ export const quizzes: QuizFull[] = [
 		questionWord: "むかしばなし",
 		questionVowels: "うあいああい",
 		imageKey: "mukashibanashi",
+		verticalMarqueeMode: true,
+		marqueeMode: true,
 		explanation:
 			"「むかしばなし」の母音は「うあいああい」。同じ母音パターンの「つかいはたし」「ふかいはなし」「くさいかかし」「むかしかがみ」が正解。",
 		choices: [

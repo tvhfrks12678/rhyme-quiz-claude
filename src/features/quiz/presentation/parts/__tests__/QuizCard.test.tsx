@@ -77,6 +77,21 @@ const questionWithoutMedia: QuizQuestion = {
 	index: 2,
 };
 
+// テスト用の問題データ（verticalMarqueeMode あり）
+const questionWithVerticalMarquee: QuizQuestion = {
+	id: "q4",
+	questionWord: "むかしばなし",
+	imageKey: "mukashibanashi",
+	verticalMarqueeMode: true,
+	marqueeMode: true,
+	choices: [
+		{ id: "q4-c1", text: "つかいはたし" },
+		{ id: "q4-c2", text: "ふかいはなし" },
+	],
+	total: 5,
+	index: 3,
+};
+
 describe("QuizCard", () => {
 	// 各テスト前に Zustand ストアをリセットする
 	// （テスト間で selectedChoiceIds などの状態が残らないようにする）
@@ -193,6 +208,84 @@ describe("QuizCard", () => {
 			// getAllByText で複数マッチを許容しつつ存在確認
 			expect(screen.getAllByText("からだ").length).toBeGreaterThan(0);
 			expect(screen.getAllByText("ながら").length).toBeGreaterThan(0);
+		});
+	});
+
+	describe("縦スクロールローマ字表示（verticalMarqueeMode）", () => {
+		it("verticalMarqueeMode があるとき縦ローマ字マーキーを表示する", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			expect(
+				screen.getByTestId("romaji-vertical-marquee"),
+			).toBeInTheDocument();
+		});
+
+		it("verticalMarqueeMode があるとき初期状態では横マーキーを表示しない", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			expect(
+				screen.queryByTestId("romaji-marquee"),
+			).not.toBeInTheDocument();
+		});
+
+		it("verticalMarqueeMode があるとき画像プレースホルダーを表示しない", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			expect(
+				screen.queryByTestId("image-placeholder"),
+			).not.toBeInTheDocument();
+		});
+
+		it("verticalMarqueeMode と marqueeMode 両方あるとき切り替えボタンが表示される", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			expect(
+				screen.getByRole("button", { name: "ローマ字縦スクロール表示" }),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: "ローマ字横スクロール表示" }),
+			).toBeInTheDocument();
+		});
+
+		it("横ローマ字ボタンをクリックすると横マーキーに切り替わる", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			const horizontalButton = screen.getByRole("button", {
+				name: "ローマ字横スクロール表示",
+			});
+			fireEvent.click(horizontalButton);
+
+			expect(screen.getByTestId("romaji-marquee")).toBeInTheDocument();
+			expect(
+				screen.queryByTestId("romaji-vertical-marquee"),
+			).not.toBeInTheDocument();
+		});
+
+		it("縦ローマ字ボタンをクリックすると縦マーキーに戻る", () => {
+			renderWithProviders(
+				<QuizCard question={questionWithVerticalMarquee} />,
+			);
+
+			fireEvent.click(
+				screen.getByRole("button", { name: "ローマ字横スクロール表示" }),
+			);
+			fireEvent.click(
+				screen.getByRole("button", { name: "ローマ字縦スクロール表示" }),
+			);
+
+			expect(
+				screen.getByTestId("romaji-vertical-marquee"),
+			).toBeInTheDocument();
 		});
 	});
 

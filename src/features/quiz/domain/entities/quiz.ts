@@ -12,6 +12,7 @@ export interface QuizFull {
 	imageKey: string;
 	videoKey?: string;
 	marqueeMode?: boolean;
+	verticalMarqueeMode?: boolean;
 	explanation: string;
 	choices: ChoiceFull[];
 }

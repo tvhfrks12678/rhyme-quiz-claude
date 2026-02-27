@@ -11,6 +11,7 @@ export interface QuestionForClient {
 	imageUrl?: string
 	videoUrl?: string
 	marqueeMode?: boolean
+	verticalMarqueeMode?: boolean
 	choices: Array<{ id: string; text: string }>
 	total: number
 	index: number
@@ -35,6 +36,7 @@ export async function getQuestionByIndex(
 		...(quiz.imageKey ? { imageUrl: resolveImageUrl(quiz.imageKey) } : {}),
 		...(quiz.videoKey ? { videoUrl: resolveVideoUrl(quiz.videoKey) } : {}),
 		...(quiz.marqueeMode ? { marqueeMode: true } : {}),
+		...(quiz.verticalMarqueeMode ? { verticalMarqueeMode: true } : {}),
 		choices: shuffledChoices,
 		total: allQuizzes.length,
 		index,
