@@ -8,46 +8,67 @@
 
 | テストファイル | テスト対象 |
 |---|---|
-| `src/features/quiz/infrastructure/__tests__/imageUrl.test.ts` | `getImageUrl` 関数 |
+| `src/features/quiz/infrastructure/media/__tests__/mediaResolver.test.ts` | `resolveImageUrl` 関数 |
 | `src/features/quiz/presentation/parts/__tests__/QuizCard.test.tsx` | `QuizCard` コンポーネント（画像表示部分） |
+| `e2e/quiz-image.spec.ts` | 画像表示の E2E テスト |
 
 ---
 
-## 1. getImageUrl ユニットテスト
+## 画像 URL の解決フロー
 
-**ファイル**: `src/features/quiz/infrastructure/__tests__/imageUrl.test.ts`
+画像 URL の解決はサーバーサイドで行い、クライアントは解決済みの URL を受け取る。
+これは動画（`videoUrl`）と同じパターン。
+
+```
+quizData.ts (imageKey: "tora")
+    ↓
+quizService.ts → resolveImageUrl("tora") → "/images/tora.jpg"
+    ↓
+API レスポンス (imageUrl: "/images/tora.jpg")
+    ↓
+QuizCard.tsx → <img src="/images/tora.jpg" />
+```
+
+---
+
+## 1. resolveImageUrl ユニットテスト
+
+**ファイル**: `src/features/quiz/infrastructure/media/__tests__/mediaResolver.test.ts`
 
 ### 目的
 
-`getImageUrl(imageKey)` が正しい画像 URL を返すことを確認する。
-また、`VITE_IMAGE_BASE_URL` 環境変数で Cloudflare R2 などに切り替えられることを確認する。
+`resolveImageUrl(key)` が `IMAGE_PROVIDER` 環境変数に応じて正しい画像 URL を返すことを確認する。
 
 ### テストケース一覧
 
-#### デフォルト動作（`VITE_IMAGE_BASE_URL` 未設定）
+#### デフォルト動作（`IMAGE_PROVIDER` 未設定）
 
 | テスト | 期待値 |
 |---|---|
-| `"tora"` を渡す | `"/image/tora.jpg"` |
-| `"umikaze"` を渡す | `"/image/umikaze.jpg"` |
-| `""` を渡す | `""` （空文字） |
+| `"tora"` を渡す | `"/images/tora.jpg"` |
 
-#### `VITE_IMAGE_BASE_URL` が設定されている場合
+#### `IMAGE_PROVIDER` が設定されている場合
 
-環境変数に `"https://pub-example.r2.dev"` を設定したとき:
+| `IMAGE_PROVIDER` 値 | テスト | 期待値 |
+|---|---|---|
+| `local` | `"tora"` を渡す | `"/images/tora.jpg"` |
+| `cloudinary` | `"tora"` を渡す（`CLOUDINARY_CLOUD_NAME=mycloud`） | `"https://res.cloudinary.com/mycloud/image/upload/tora.jpg"` |
+| 未設定 | `""` を渡す | `""` （空文字） |
 
-| テスト | 期待値 |
-|---|---|
-| `"tora"` を渡す | `"https://pub-example.r2.dev/tora.jpg"` |
-| `""` を渡す | `""` （空文字） |
+### Cloudflare R2 や他のストレージへの切り替え方法
 
-### Cloudflare R2 への切り替え方法
-
-`.env` ファイルまたはデプロイ設定に以下を追加するだけで画像の配信元を切り替えられる:
+`mediaResolver.ts` に新しい `ImageProvider` を追加し、`IMAGE_PROVIDER` 環境変数で切り替える:
 
 ```env
-VITE_IMAGE_BASE_URL=https://pub-xxxxxxxxxx.r2.dev
+# ローカル開発（デフォルト）
+IMAGE_PROVIDER=local
+
+# Cloudinary を使う場合
+IMAGE_PROVIDER=cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloud-name
 ```
+
+Cloudflare R2 に対応する場合は `mediaResolver.ts` に `r2` ケースを追加する。
 
 ---
 
@@ -62,9 +83,9 @@ VITE_IMAGE_BASE_URL=https://pub-xxxxxxxxxx.r2.dev
 ### 表示の優先順位
 
 ```
-videoUrl あり → <video> を表示
-imageKey あり（videoUrl なし） → <img> を表示
-どちらもなし → プレースホルダーを表示
+videoUrl あり              → <video> を表示
+imageUrl あり（動画なし）  → <img> を表示
+どちらもなし               → プレースホルダーを表示
 ```
 
 ### テストケース一覧
@@ -77,36 +98,49 @@ imageKey あり（videoUrl なし） → <img> を表示
 | `src` 属性が正しい | `video-player` | 指定した URL が設定されること |
 | 画像プレースホルダーは非表示 | `image-placeholder` | DOM に存在しないこと |
 
-#### 画像表示（`imageKey` あり・`videoUrl` なし）
+#### 画像表示（`imageUrl` あり・`videoUrl` なし）
 
 | テスト | `data-testid` | 確認内容 |
 |---|---|---|
-| `<img>` が描画される | `quiz-image` | タグが `IMG` であること |
-| `src` 属性が正しい | `quiz-image` | `/image/tora.jpg` が設定されること |
-| `alt` 属性が正しい | `quiz-image` | `questionWord` が設定されること |
+| `<img>` が描画される | `question-image` | タグが `IMG` であること |
+| `src` 属性が正しい | `question-image` | `/images/tora.jpg` が設定されること |
+| `alt` 属性が正しい | `question-image` | `questionWord` が設定されること |
 | `<video>` は非表示 | `video-player` | DOM に存在しないこと |
 | プレースホルダーは非表示 | `image-placeholder` | DOM に存在しないこと |
 
-#### プレースホルダー表示（`imageKey` も `videoUrl` もなし）
+#### プレースホルダー表示（`imageUrl` も `videoUrl` もなし）
 
 | テスト | `data-testid` | 確認内容 |
 |---|---|---|
 | プレースホルダーが表示される | `image-placeholder` | DOM に存在すること |
 | `<video>` は非表示 | `video-player` | DOM に存在しないこと |
-| `<img>` は非表示 | `quiz-image` | DOM に存在しないこと |
+| `<img>` は非表示 | `question-image` | DOM に存在しないこと |
+
+---
+
+## 3. E2E テスト（Playwright）
+
+**ファイル**: `e2e/quiz-image.spec.ts`
+
+### テストケース一覧
+
+| テスト | 内容 |
+|---|---|
+| Q1 で画像が表示される | `/images/tora.jpg` の `<img>` が表示されること |
+| Q2 では動画が優先される | `<video>` が表示され `<img>` は表示されないこと |
 
 ---
 
 ## 実行方法
 
 ```bash
-# 全テスト
+# ユニット・コンポーネントテスト
 pnpm test
 
-# imageUrl のみ
-pnpm test src/features/quiz/infrastructure/__tests__/imageUrl.test.ts
+# mediaResolver のテストのみ
+pnpm test src/features/quiz/infrastructure/media/__tests__/mediaResolver.test.ts
 
-# QuizCard のみ
+# QuizCard のテストのみ
 pnpm test src/features/quiz/presentation/parts/__tests__/QuizCard.test.tsx
 ```
 
@@ -116,8 +150,8 @@ pnpm test src/features/quiz/presentation/parts/__tests__/QuizCard.test.tsx
 
 現在ローカルで配信している画像:
 
-| imageKey | ファイルパス |
-|---|---|
-| `tora` | `public/image/tora.jpg` |
+| imageKey | ファイルパス | 備考 |
+|---|---|---|
+| `tora` | `public/images/tora.jpg` | 1問目（とら） |
 
-追加する場合は `public/image/{imageKey}.jpg` に配置し、`quizData.ts` の `imageKey` に設定する。
+追加する場合は `public/images/{imageKey}.jpg` に配置し、`quizData.ts` の `imageKey` に設定する。
