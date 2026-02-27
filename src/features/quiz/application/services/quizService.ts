@@ -1,5 +1,5 @@
 import type { QuizResult } from "../../domain/entities/quiz"
-import { resolveVideoUrl } from "../../infrastructure/media/mediaResolver"
+import { resolveVideoUrl, resolveImageUrl } from "../../infrastructure/media/mediaResolver"
 import { judgeAnswer } from "../../domain/logic/rhyme"
 import { getRepository } from "../../infrastructure/getRepository"
 
@@ -7,6 +7,7 @@ export interface QuestionForClient {
 	id: string
 	questionWord: string
 	imageKey: string
+	imageUrl?: string
 	videoUrl?: string
 	choices: Array<{ id: string; text: string }>
 	total: number
@@ -29,6 +30,7 @@ export async function getQuestionByIndex(
 		id: quiz.id,
 		questionWord: quiz.questionWord,
 		imageKey: quiz.imageKey,
+		...(quiz.imageKey ? { imageUrl: resolveImageUrl(quiz.imageKey) } : {}),
 		...(quiz.videoKey ? { videoUrl: resolveVideoUrl(quiz.videoKey) } : {}),
 		choices: shuffledChoices,
 		total: allQuizzes.length,

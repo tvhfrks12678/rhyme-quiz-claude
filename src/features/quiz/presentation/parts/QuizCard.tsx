@@ -5,7 +5,6 @@ import { ShineBorder } from "#/components/magicui/shine-border";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 
 import type { QuizQuestion } from "../../contracts/quiz";
-import { getImageUrl } from "../../infrastructure/imageUrl";
 import { useQuizStore, useSubmitAnswer } from "../hooks/useQuiz";
 import { ChoiceList } from "./ChoiceList";
 
@@ -47,13 +46,13 @@ export function QuizCard({ question }: QuizCardProps) {
 								data-testid="video-player"
 							/>
 						</div>
-					) : question.imageKey ? (
+					) : question.imageUrl ? (
 						<div className="flex justify-center">
 							<img
-								src={getImageUrl(question.imageKey)}
+								src={question.imageUrl}
 								alt={question.questionWord}
-								className="w-40 h-40 object-cover rounded-lg"
-								data-testid="quiz-image"
+								className="w-full max-w-sm rounded-lg object-contain h-48"
+								data-testid="question-image"
 							/>
 						</div>
 					) : (
