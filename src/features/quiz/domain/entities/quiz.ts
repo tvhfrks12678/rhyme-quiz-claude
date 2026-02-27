@@ -11,6 +11,7 @@ export interface QuizFull {
 	questionVowels: string;
 	imageKey: string;
 	videoKey?: string;
+	marqueeMode?: boolean;
 	explanation: string;
 	choices: ChoiceFull[];
 }

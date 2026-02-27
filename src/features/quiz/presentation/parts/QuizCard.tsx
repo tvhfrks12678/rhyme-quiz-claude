@@ -1,4 +1,4 @@
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, MonitorPlay, Type } from "lucide-react";
 import { useState } from "react";
 
 import { ShimmerButton } from "#/components/magicui/shimmer-button";
@@ -8,15 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import type { QuizQuestion } from "../../contracts/quiz";
 import { useQuizStore, useSubmitAnswer } from "../hooks/useQuiz";
 import { ChoiceList } from "./ChoiceList";
+import { RomajiMarquee } from "./RomajiMarquee";
 
 interface QuizCardProps {
 	question: QuizQuestion;
 }
 
+type DisplayMode = "marquee" | "image" | "video";
+
 export function QuizCard({ question }: QuizCardProps) {
 	const selectedChoiceIds = useQuizStore((s) => s.selectedChoiceIds);
 	const submitMutation = useSubmitAnswer();
 	const [imageError, setImageError] = useState(false);
+
+	const initialMode: DisplayMode = question.marqueeMode
+		? "marquee"
+		: question.videoUrl
+			? "video"
+			: "image";
+	const [displayMode, setDisplayMode] = useState<DisplayMode>(initialMode);
 
 	const handleSubmit = () => {
 		submitMutation.mutate({
@@ -25,8 +35,11 @@ export function QuizCard({ question }: QuizCardProps) {
 		});
 	};
 
-	const showImage = question.imageUrl && !imageError;
-	const showPlaceholder = !question.videoUrl && !showImage;
+	const hasImage = Boolean(question.imageUrl) && !imageError;
+	const hasVideo = Boolean(question.videoUrl);
+	const hasMarquee = Boolean(question.marqueeMode);
+
+	const showToggle = hasMarquee && (hasImage || hasVideo);
 
 	return (
 		<div className="relative">
@@ -42,7 +55,60 @@ export function QuizCard({ question }: QuizCardProps) {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					{question.videoUrl ? (
+					{showToggle && (
+						<div className="flex justify-end gap-2">
+							<button
+								type="button"
+								onClick={() => setDisplayMode("marquee")}
+								className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+									displayMode === "marquee"
+										? "bg-green-600 text-white"
+										: "bg-gray-200 text-gray-600 hover:bg-gray-300"
+								}`}
+								aria-label="ローマ字スクロール表示"
+							>
+								<Type className="w-3 h-3" />
+								ローマ字
+							</button>
+							{hasVideo && (
+								<button
+									type="button"
+									onClick={() => setDisplayMode("video")}
+									className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+										displayMode === "video"
+											? "bg-purple-600 text-white"
+											: "bg-gray-200 text-gray-600 hover:bg-gray-300"
+									}`}
+									aria-label="動画表示"
+								>
+									<MonitorPlay className="w-3 h-3" />
+									動画
+								</button>
+							)}
+							{hasImage && (
+								<button
+									type="button"
+									onClick={() => setDisplayMode("image")}
+									className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+										displayMode === "image"
+											? "bg-blue-600 text-white"
+											: "bg-gray-200 text-gray-600 hover:bg-gray-300"
+									}`}
+									aria-label="画像表示"
+								>
+									<ImageIcon className="w-3 h-3" />
+									画像
+								</button>
+							)}
+						</div>
+					)}
+
+					{displayMode === "marquee" && hasMarquee ? (
+						<RomajiMarquee
+							questionWord={question.questionWord}
+							choices={question.choices}
+						/>
+					) : displayMode === "video" && hasVideo ? (
 						<div className="flex justify-center">
 							<video
 								src={question.videoUrl}
@@ -51,7 +117,7 @@ export function QuizCard({ question }: QuizCardProps) {
 								data-testid="video-player"
 							/>
 						</div>
-					) : showImage ? (
+					) : displayMode === "image" && hasImage ? (
 						<div className="flex justify-center">
 							<img
 								src={question.imageUrl}
@@ -61,7 +127,7 @@ export function QuizCard({ question }: QuizCardProps) {
 								onError={() => setImageError(true)}
 							/>
 						</div>
-					) : showPlaceholder ? (
+					) : !hasMarquee && !hasVideo && !hasImage ? (
 						<div className="flex justify-center">
 							<div
 								className="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300"

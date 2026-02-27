@@ -35,6 +35,7 @@ export const quizzes: QuizFull[] = [
 		questionWord: "うみかぜ",
 		questionVowels: "ういあえ",
 		imageKey: "umikaze",
+		marqueeMode: true,
 		explanation:
 			"「うみかぜ」の母音は「ういあえ」。同じ母音パターンの「つきかげ」「くびかけ」「ぐりかえ」が正解。",
 		choices: [
