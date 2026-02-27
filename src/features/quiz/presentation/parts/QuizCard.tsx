@@ -46,6 +46,15 @@ export function QuizCard({ question }: QuizCardProps) {
 								data-testid="video-player"
 							/>
 						</div>
+					) : question.imageUrl ? (
+						<div className="flex justify-center">
+							<img
+								src={question.imageUrl}
+								alt={question.questionWord}
+								className="w-full max-w-sm rounded-lg object-contain h-48"
+								data-testid="question-image"
+							/>
+						</div>
 					) : (
 						<div className="flex justify-center">
 							<div

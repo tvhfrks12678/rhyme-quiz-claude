@@ -7,7 +7,7 @@
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { resolveVideoUrl } from "../mediaResolver";
+import { resolveImageUrl, resolveVideoUrl } from "../mediaResolver";
 
 describe("resolveVideoUrl", () => {
 	// 各テスト後に環境変数の書き換えをリセットする
@@ -44,5 +44,32 @@ describe("resolveVideoUrl", () => {
 	it("key が長い文字列でも URL に正しく含まれる", () => {
 		const key = "20260226_1254_01kjb86c8mf86rdf15zcrvc52b";
 		expect(resolveVideoUrl(key)).toBe(`/video/${key}.mp4`);
+	});
+});
+
+describe("resolveImageUrl", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("IMAGE_PROVIDER 未設定のとき /images/${key}.jpg を返す", () => {
+		expect(resolveImageUrl("tora")).toBe("/images/tora.jpg");
+	});
+
+	it("IMAGE_PROVIDER=local のとき /images/${key}.jpg を返す", () => {
+		vi.stubEnv("IMAGE_PROVIDER", "local");
+		expect(resolveImageUrl("tora")).toBe("/images/tora.jpg");
+	});
+
+	it("IMAGE_PROVIDER=cloudinary のとき Cloudinary 画像 URL を返す", () => {
+		vi.stubEnv("IMAGE_PROVIDER", "cloudinary");
+		vi.stubEnv("CLOUDINARY_CLOUD_NAME", "mycloud");
+		expect(resolveImageUrl("tora")).toBe(
+			"https://res.cloudinary.com/mycloud/image/upload/tora.jpg",
+		);
+	});
+
+	it("key が空文字のとき空文字を返す", () => {
+		expect(resolveImageUrl("")).toBe("");
 	});
 });

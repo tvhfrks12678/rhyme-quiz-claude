@@ -3,8 +3,9 @@
  * QuizCard コンポーネントテスト（React Testing Library）
  *
  * テスト対象: QuizCard コンポーネントの描画ロジック
- * - question.videoUrl がある → <video> を表示する
- * - question.videoUrl がない → 画像プレースホルダーを表示する
+ * - question.videoUrl がある              → <video> を表示する
+ * - question.imageUrl がある（動画なし）  → <img> を表示する
+ * - imageUrl も videoUrl もない           → 画像プレースホルダーを表示する
  *
  * React Testing Library（RTL）は「ユーザーが見る画面」に近い形でテストする。
  * 実際の DOM に描画して、要素の存在を確認する。
@@ -48,11 +49,25 @@ const questionWithVideo: QuizQuestion = {
 	index: 1,
 };
 
-// テスト用の問題データ（videoUrl なし）
-const questionWithoutVideo: QuizQuestion = {
+// テスト用の問題データ（imageUrl あり・videoUrl なし）
+const questionWithImage: QuizQuestion = {
 	id: "q1",
 	questionWord: "とら",
 	imageKey: "tora",
+	imageUrl: "/images/tora.jpg",
+	choices: [
+		{ id: "c1", text: "おか" },
+		{ id: "c2", text: "ぶた" },
+	],
+	total: 5,
+	index: 0,
+};
+
+// テスト用の問題データ（videoUrl も imageUrl もなし）
+const questionWithNoMedia: QuizQuestion = {
+	id: "q1",
+	questionWord: "とら",
+	imageKey: "",
 	choices: [
 		{ id: "c1", text: "おか" },
 		{ id: "c2", text: "ぶた" },
@@ -91,17 +106,59 @@ describe("QuizCard", () => {
 		});
 	});
 
+	describe("画像表示", () => {
+		it("imageUrl があり videoUrl がないとき <img> を表示する", () => {
+			renderWithProviders(<QuizCard question={questionWithImage} />);
+
+			const img = screen.getByTestId("question-image");
+			expect(img).toBeInTheDocument();
+			expect(img.tagName).toBe("IMG");
+		});
+
+		it("imageUrl の <img> は正しい src 属性を持つ", () => {
+			renderWithProviders(<QuizCard question={questionWithImage} />);
+
+			const img = screen.getByTestId("question-image");
+			expect(img).toHaveAttribute("src", "/images/tora.jpg");
+		});
+
+		it("imageUrl の <img> は alt 属性に questionWord を持つ", () => {
+			renderWithProviders(<QuizCard question={questionWithImage} />);
+
+			const img = screen.getByTestId("question-image");
+			expect(img).toHaveAttribute("alt", "とら");
+		});
+
+		it("imageUrl があるとき <video> は表示しない", () => {
+			renderWithProviders(<QuizCard question={questionWithImage} />);
+
+			expect(screen.queryByTestId("video-player")).not.toBeInTheDocument();
+		});
+
+		it("imageUrl があるとき画像プレースホルダーは表示しない", () => {
+			renderWithProviders(<QuizCard question={questionWithImage} />);
+
+			expect(screen.queryByTestId("image-placeholder")).not.toBeInTheDocument();
+		});
+	});
+
 	describe("画像プレースホルダー表示", () => {
-		it("videoUrl がないとき画像プレースホルダーを表示する", () => {
-			renderWithProviders(<QuizCard question={questionWithoutVideo} />);
+		it("videoUrl も imageUrl もないとき画像プレースホルダーを表示する", () => {
+			renderWithProviders(<QuizCard question={questionWithNoMedia} />);
 
 			expect(screen.getByTestId("image-placeholder")).toBeInTheDocument();
 		});
 
-		it("videoUrl がないとき <video> 要素は表示しない", () => {
-			renderWithProviders(<QuizCard question={questionWithoutVideo} />);
+		it("videoUrl も imageUrl もないとき <video> 要素は表示しない", () => {
+			renderWithProviders(<QuizCard question={questionWithNoMedia} />);
 
 			expect(screen.queryByTestId("video-player")).not.toBeInTheDocument();
+		});
+
+		it("videoUrl も imageUrl もないとき <img> 要素は表示しない", () => {
+			renderWithProviders(<QuizCard question={questionWithNoMedia} />);
+
+			expect(screen.queryByTestId("question-image")).not.toBeInTheDocument();
 		});
 	});
 
