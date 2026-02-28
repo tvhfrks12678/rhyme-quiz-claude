@@ -101,6 +101,8 @@ BEGIN;
 COMMIT;
 ```
 
+トランザクションが保証する4つの性質 **ACID**（原子性・一貫性・分離性・永続性）や Drizzle ORM でのコード例は [06-transaction-acid.md](./06-transaction-acid.md) で詳しく解説する。
+
 ---
 
 ## CRUD
