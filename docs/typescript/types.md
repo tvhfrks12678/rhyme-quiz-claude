@@ -173,15 +173,27 @@ phase: "answering" | "result" | "finished"; // フェーズは3つのうちの�
 ```typescript
 // QuizFull の例（このプロジェクトの実際のコード）
 export interface QuizFull {
-  id: string;                   // 必須（省略不可）
-  questionWord: string;         // 必須
-  videoKey?: string;            // 任意（省略可能）→ videoKey は string | undefined
-  marqueeMode?: boolean;        // 任意
+  id: string;                    // 必須（省略不可）
+  questionWord: string;          // 必須
+  questionVowels: string;        // 必須
+  imageKey: string;              // 必須
+  explanation: string;           // 必須
+  choices: ChoiceFull[];         // 必須
+  videoKey?: string;             // 任意（省略可能）→ videoKey は string | undefined
+  marqueeMode?: boolean;         // 任意
   verticalMarqueeMode?: boolean; // 任意
 }
 
 // 使う側では存在チェックが必要
-const quiz: QuizFull = { id: "q1", questionWord: "とら", imageKey: "tora", questionVowels: "おあ", explanation: "..." choices: [] };
+const quiz: QuizFull = {
+  id: "q1",
+  questionWord: "とら",
+  questionVowels: "おあ",
+  imageKey: "tora",
+  explanation: "「とら」の母音は「おあ」。",
+  choices: [],
+  // videoKey は省略（undefined になる）
+};
 
 if (quiz.videoKey) {
   // videoKey が存在する場合だけ処理する

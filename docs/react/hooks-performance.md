@@ -194,15 +194,28 @@ const Item = memo(({ name, price }: ItemProps) => {
   );
 });
 
-// 第2引数にカスタム比較関数も渡せる（デフォルトは浅い比較）
+// カスタム比較関数が有効なケース：表示に使わない props を持つ場合
+type ItemWithMetaProps = {
+  name: string;
+  price: number;
+  updatedAt: Date;  // 更新日時（表示には使わない）
+};
+
+// 第2引数にカスタム比較関数を渡せる（デフォルトは浅い比較）
 const ItemWithCustomCompare = memo(
-  ({ name, price }: ItemProps) => (
+  ({ name, price }: ItemWithMetaProps) => (
     <li>{name}: ¥{price.toLocaleString()}</li>
+    // updatedAt は表示しない
   ),
   (prevProps, nextProps) => {
     // true を返すと「同じ」と判定して再レンダリングをスキップする
-    // ここでは name だけ比較し、price の変化は無視する例
-    return prevProps.name === nextProps.name;
+    // name と price（表示に使うフィールド）だけを比較する
+    // updatedAt は表示に影響しないので比較しない
+    // → updatedAt だけが変わっても再レンダリングをスキップできる
+    return (
+      prevProps.name === nextProps.name &&
+      prevProps.price === nextProps.price
+    );
   }
 );
 ```
