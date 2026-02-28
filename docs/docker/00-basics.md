@@ -15,6 +15,7 @@
 原因は**実行環境の差異**にある。
 
 - Node.js のバージョンが違う（16 vs 20 vs 22）
+- パッケージマネージャーが違う（npm vs pnpm vs bun）
 - OS が違う（Mac / Windows / Linux）
 - インストール済みのライブラリが違う
 - 環境変数の設定が違う
@@ -29,7 +30,7 @@ Docker を使うと、アプリと動作に必要なすべての環境（OS・�
 
 コンテナを作るための**設計図（テンプレート）**。
 
-- `node:22-slim`（Node.js 22 が入った Linux 環境）
+- `node:22-slim`（Node.js 22 が入った軽量な Linux 環境）
 - `oven/bun:latest`（Bun が入った Linux 環境）
 - 自分で作ったアプリイメージ
 
@@ -126,13 +127,13 @@ docker logs -f a1b2c3d4e5f6       # リアルタイムでログを追う（-f: f
 
 ## このプロジェクトで Docker が必要になる場面
 
-現在は Cloudflare Workers（エッジ環境）にデプロイしているため、Docker は不要。
+現在は Cloudflare Workers / Pages（エッジ環境）にデプロイしているため、Docker は不要。
 ただし、以下の理由で **Cloud Run（コンテナ環境）への移行**が必要になった場合、Docker 化が必須となる。
 
 | 移行が必要になるケース | 理由 |
 |---|---|
 | CPU 時間制限に引っかかる | Workers の無料枠は 10ms、有料でも 30s まで |
-| `fs`・`net` など Node.js API が必要 | Workers では使えない |
+| `fs`・`net` など Node.js API が必要 | Workers では使えない（一部制限あり） |
 | 長時間のバックグラウンド処理が必要 | Workers はリクエスト処理専用 |
 
 Cloud Run はコンテナ実行基盤なので、アプリを Docker イメージとして用意する必要がある。
@@ -141,5 +142,5 @@ Cloud Run はコンテナ実行基盤なので、アプリを Docker イメー�
 
 ## 次のステップ
 
-具体的な Dockerfile の書き方と必要なファイル構成については、
+具体的な Dockerfile の書き方（Node.js + pnpm 版）については、
 [01-dockerfile.md](./01-dockerfile.md) で解説する。
