@@ -16,26 +16,27 @@ TanStack Start を Cloud Run にデプロイする場合に必要なファイル
 
 ---
 
-## Dockerfile（Bun 版）
+## Dockerfile（pnpm 版）
 
-TanStack Start は Bun で動かすため、Bun のイメージを使う。
+このプロジェクトは pnpm を使っているため、Node.js イメージ上で pnpm を有効化して使う。
 
 ```dockerfile
 # ── ビルドステージ ──────────────────────────────────────
-FROM oven/bun:latest AS builder
+FROM node:22-slim AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
-RUN bun run build
+RUN pnpm run build
 
 # ── 実行ステージ ────────────────────────────────────────
-FROM oven/bun:latest
+FROM node:22-slim
 WORKDIR /app
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
 EXPOSE 8080
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]
 ```
 
 ---
@@ -45,13 +46,24 @@ CMD ["bun", "run", ".output/server/index.mjs"]
 ### ビルドステージ
 
 ```dockerfile
-FROM oven/bun:latest AS builder
+FROM node:22-slim AS builder
 ```
 
 - `FROM`: ベースイメージを指定する（このイメージの上に積み上げる）
-- `oven/bun:latest`: Bun 公式イメージ（`oven` は Bun を作った会社）
+- `node:22-slim`: Node.js 22 が入った軽量 Linux 環境（`slim` は不要なツールを省いた小さいイメージ）
 - `AS builder`: このステージに `builder` という名前をつける（後で参照するため）
 - マルチステージビルドの1段目（ビルド専用）
+
+---
+
+```dockerfile
+RUN corepack enable && corepack prepare pnpm@latest --activate
+```
+
+- `corepack`: Node.js に付属するパッケージマネージャー管理ツール
+- `corepack enable`: corepack を有効にする（pnpm などのコマンドが使えるようになる）
+- `corepack prepare pnpm@latest --activate`: 最新の pnpm をダウンロードして有効化する
+- これにより、次以降の `pnpm` コマンドが使えるようになる
 
 ---
 
@@ -60,28 +72,28 @@ WORKDIR /app
 ```
 
 - 以降のコマンドを実行するディレクトリを `/app` に設定する
-- `cd /app` と似ているが、存在しければ自動作成される
+- `cd /app` と似ているが、存在しなければ自動作成される
 
 ---
 
 ```dockerfile
-COPY package.json bun.lock ./
+COPY package.json pnpm-lock.yaml ./
 ```
 
-- ホストの `package.json` と `bun.lock` をコンテナの `/app/` にコピーする
+- ホストの `package.json` と `pnpm-lock.yaml` をコンテナの `/app/` にコピーする
 - **先にこれだけコピーする理由**: Docker はレイヤーをキャッシュする。
-  `bun install` の後に `COPY . .` するより、依存関係が変わっていなければ
-  `bun install` を再実行せずキャッシュを使い回せる。ビルドが速くなる。
+  `pnpm install` の後に `COPY . .` するより、依存関係が変わっていなければ
+  `pnpm install` を再実行せずキャッシュを使い回せる。ビルドが速くなる。
 
 ---
 
 ```dockerfile
-RUN bun install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 ```
 
 - `RUN`: ビルド時にコマンドを実行する
-- `bun install`: `package.json` に書かれた依存パッケージをインストールする
-- `--frozen-lockfile`: `bun.lock` の内容と一致しない場合はエラーにする
+- `pnpm install`: `package.json` に書かれた依存パッケージをインストールする
+- `--frozen-lockfile`: `pnpm-lock.yaml` の内容と一致しない場合はエラーにする
   （本番環境で意図しないバージョン変更を防ぐため）
 
 ---
@@ -90,33 +102,32 @@ RUN bun install --frozen-lockfile
 COPY . .
 ```
 
-- ホストのプロジェクト全体（`.`）を コンテナの `/app/`（`.`）にコピーする
+- ホストのプロジェクト全体（`.`）をコンテナの `/app/`（`.`）にコピーする
 - `.dockerignore` に書かれたファイルは除外される
 
 ---
 
 ```dockerfile
-RUN bun run build
+RUN pnpm run build
 ```
 
 - アプリをビルドする（`package.json` の `build` スクリプトを実行）
-- TanStack Start は `preset: 'node-server'` でビルドすると
-  `.output/server/index.mjs` が生成される（Node.js / Bun で起動できる形式）
+- Cloud Run 用の設定でビルドすると `.output/server/index.mjs` が生成される
+  （Node.js で起動できる形式）
 
-> **注意**: Cloud Run 用にビルドするには、`app.config.ts` で
-> `server.preset: 'node-server'` を設定する必要がある。
-> Cloudflare 用の `cloudflare-pages` のままだと動かない。
+> **注意**: Cloud Run 用にビルドするには、`vite.config.ts` の変更が必要。
+> 詳細は後述の「vite.config.ts の変更（Cloud Run 移行時）」を参照。
 
 ---
 
 ### 実行ステージ
 
 ```dockerfile
-FROM oven/bun:latest
+FROM node:22-slim
 ```
 
 - 2段目のベースイメージ。1段目と同じイメージを使う。
-- **なぜ2段階に分けるのか**: ビルドツール（開発用 devDependencies など）は
+- **なぜ2段階に分けるのか**: ビルドツール（devDependencies・pnpm など）は
   本番の実行には不要。2段目には実行に必要なファイルだけコピーすることで、
   イメージのサイズを小さく保てる。
 
@@ -145,7 +156,7 @@ COPY --from=builder /app/package.json ./
 ```
 
 - `package.json` もコピーする
-- `bun run start` のようなスクリプトを実行するために必要な場合がある
+- `pnpm run start` のようなスクリプトを実行するために必要な場合がある
 
 ---
 
@@ -161,11 +172,11 @@ EXPOSE 8080
 ---
 
 ```dockerfile
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]
 ```
 
 - コンテナ起動時に実行するコマンド
-- `bun run .output/server/index.mjs` でサーバーを起動する
+- `node .output/server/index.mjs` でサーバーを起動する
 - `CMD` は `docker run` 時にコマンドを渡すと上書きできる（`ENTRYPOINT` との違い）
 
 ---
@@ -186,7 +197,7 @@ node_modules
 
 | 行 | 理由 |
 |---|---|
-| `node_modules` | コンテナ内で `bun install` するので不要。サイズが大きく転送が遅くなる |
+| `node_modules` | コンテナ内で `pnpm install` するので不要。サイズが大きく転送が遅くなる |
 | `.output` | ビルドステージで生成するので不要 |
 | `.git` | Git の履歴はアプリ実行に不要。漏らしたくない情報も含まれる |
 | `.env` | 環境変数ファイルはイメージに含めない（Cloud Run の環境変数機能を使う） |
@@ -194,28 +205,59 @@ node_modules
 
 ---
 
-## app.config.ts の変更（Cloud Run 移行時）
+## vite.config.ts の変更（Cloud Run 移行時）
 
-Cloudflare から Cloud Run に移行する際、**ビルドのプリセットを変更**する必要がある。
+Cloudflare から Cloud Run に移行する際、**2つの変更**が必要になる。
+
+### 変更が必要な理由
+
+現在の `vite.config.ts` には `@cloudflare/vite-plugin` が含まれている。
+このプラグインが有効なままだと、ビルド出力が Cloudflare Workers 向けの `dist/` 形式になり、
+`.output/server/index.mjs`（Cloud Run で必要なファイル）が生成されない。
+
+**変更1: `@cloudflare/vite-plugin` を削除する**
 
 ```ts
 // 移行前（Cloudflare 用）
-export default defineConfig({
-  server: {
-    preset: 'cloudflare-pages',
-  },
-})
+import { cloudflare } from '@cloudflare/vite-plugin'
 
-// 移行後（Cloud Run / Node.js 用）
 export default defineConfig({
-  server: {
-    preset: 'node-server',
-  },
+  plugins: [
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),  // ← 削除
+    tanstackStart(),
+    viteReact(),
+  ],
 })
 ```
 
-`preset` はどのランタイム向けにビルドするかを決める設定。
-`cloudflare-pages` のままでは Cloud Run では動かない。
+```ts
+// 移行後（Cloud Run 用）
+export default defineConfig({
+  plugins: [
+    tanstackStart(),
+    viteReact(),
+  ],
+})
+```
+
+**変更2: ビルドプリセットを `node-server` に設定する**
+
+```ts
+// 移行後（Cloud Run 用）
+export default defineConfig({
+  plugins: [
+    tanstackStart({
+      server: {
+        preset: 'node-server',  // ← 追加
+      },
+    }),
+    viteReact(),
+  ],
+})
+```
+
+この2つを合わせて行うことで、`pnpm run build` 後に
+`.output/server/index.mjs` が生成され、Cloud Run で起動できるようになる。
 
 ---
 
