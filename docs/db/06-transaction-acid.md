@@ -23,10 +23,15 @@ choices テーブル → INSERT 失敗 ❌  ← クイズだけ存在して選�
 ```sql
 BEGIN;                          -- トランザクション開始
   INSERT INTO quizzes ...;
-  INSERT INTO choices ...;      -- ここで失敗したら ↓
+  INSERT INTO choices ...;      -- ここで失敗してもトランザクションは自動では終わらない
 COMMIT;                         -- 全て成功したら確定
--- ROLLBACK;                    -- 失敗時は全て取り消し（自動）
+
+-- ⚠️ SQLite/libSQL では文エラーが起きても自動でロールバックはされない
+-- エラーを検知したら、アプリ側で明示的に ROLLBACK を呼ぶ必要がある
+-- ROLLBACK;                    -- ← 明示的に呼ばないと以前の成功した INSERT が残る可能性がある
 ```
+
+> **補足**: `db.transaction()` を使う Drizzle ORM では、コールバック内で例外が投げられると自動で `ROLLBACK` が発行される。生 SQL を直接書く場合は、エラーハンドリングと `ROLLBACK` の明示的な呼び出しが必要。
 
 ---
 
@@ -167,16 +172,28 @@ await db.transaction(async (tx) => {
 
 Drizzle/libSQL はネストしたトランザクションを **セーブポイント** で扱う。
 
+内側の `tx.transaction()` が失敗したとき、セーブポイントまで巻き戻すことができる。
+ただし、**エラーをキャッチしないと外側のトランザクションまで伝播してしまう**ため、
+内側のエラーを外側に伝えたくない場合は `try/catch` で明示的に捕捉する必要がある。
+
 ```typescript
 await db.transaction(async (tx) => {
+  // 外側: クイズを INSERT
   await tx.insert(quizzes).values({ id: 'q1', ... });
 
-  // ネストした transaction → SAVEPOINT として扱われる
-  await tx.transaction(async (tx2) => {
-    await tx2.insert(choices).values([...]);
-    // tx2 が失敗しても tx1 のクイズ INSERT は残せる（セーブポイントへのロールバック）
-  });
+  try {
+    // ネストした transaction → 内部では SAVEPOINT として扱われる
+    await tx.transaction(async (tx2) => {
+      await tx2.insert(choices).values([...]);
+      // tx2 のコールバックで例外が出ると SAVEPOINT へのロールバックが発生する
+    });
+  } catch {
+    // ここで内側のエラーをキャッチすることで、外側の tx は継続できる
+    // → クイズの INSERT は残り、選択肢の INSERT だけが取り消される
+    console.error('選択肢の登録に失敗しました（クイズは登録済み）');
+  }
 });
+// try/catch がなければ、tx2 のエラーが外側まで伝播し、tx1 ごとロールバックされる ⚠️
 ```
 
 ---
