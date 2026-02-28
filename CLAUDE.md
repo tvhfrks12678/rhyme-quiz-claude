@@ -71,7 +71,7 @@ PR作成後、自分自身でレビューを行う:
 Follow Conventional Commits format:
 
 ```
-<type>(<scope>): [HH:MM:SS] <description> #<issue番号>
+<type>(<scope>): [HH:MM:SS] (HH:MM:SS) <description> #<issue番号>
 ```
 
 ### Type（必須）
@@ -91,16 +91,19 @@ Follow Conventional Commits format:
 
 ### 作業時間（必須）
 
-- 1行目に `[HH:MM:SS]` 形式でそのコミットの作業にかかった時間を記載する
-- description の直前に置く
-- 形式: `[HH:MM:SS]`（例: `[00:45:12]`, `[01:23:43]`）
+1行目に AI作業時間と合計時間の両方を記載する。
+
+- **`[HH:MM:SS]`**: AI作業時間。AIがプロンプトを受け取ってから処理を完了するまでの純粋な累積時間（リサーチ、コード修正、ツール実行など）。
+- **`(HH:MM:SS)`**: 合計時間。ユーザーから最初の指示を受けてから、最終的なコミットが完了するまでの全経過時間（ユーザーの返答待ち時間を含む）。
+
+形式: `[HH:MM:SS] (HH:MM:SS)`（例: `[00:05:30] (00:15:45)`）
 
 ### 例
 
-- `feat(break): [00:45:12] add break time input feature #42`
-- `fix(attendance): [00:12:30] correct total hours calculation #15`
-- `test(break): [00:30:00] add unit tests for break time validation #42`
-- `chore(claude): [00:05:00] update claude code settings`
+- `feat(break): [00:45:12] (01:10:00) add break time input feature #42`
+- `fix(attendance): [00:12:30] (00:20:00) correct total hours calculation #15`
+- `test(break): [00:30:00] (00:45:00) add unit tests for break time validation #42`
+- `chore(claude): [00:05:00] (00:08:00) update claude code settings`
 
 ### ルール
 
