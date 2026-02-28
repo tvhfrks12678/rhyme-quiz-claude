@@ -26,7 +26,11 @@ const imageStrategies: Record<ImageProvider, ImageStrategy> = {
 };
 
 function getImageProvider(): ImageProvider {
-	return (process.env.IMAGE_PROVIDER as ImageProvider) ?? "local";
+	const env = process.env.IMAGE_PROVIDER;
+	if (env && env in imageStrategies) {
+		return env as ImageProvider;
+	}
+	return "local";
 }
 
 export function resolveImageUrl(key: string): string {
