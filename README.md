@@ -3,7 +3,7 @@
 - 問題文（例:「とら」）と同じ母音パターンを持つ選択肢を選ぶゲームです
 - AIにコードを書かせて実装
 
-<img width="250" alt="スクリーンショット 2026-02-26 0 21 17" src="https://github.com/user-attachments/assets/011fe1bd-92eb-456c-9166-c3f5211a4462" />
+<img width="250" alt="スクリーンショット 2026-02-26 15 37 00" src="https://github.com/user-attachments/assets/da201f65-ca00-4378-915d-18229abcfb6d" />
 <br>
 <img width="250" alt="スクリーンショット 2026-02-26 0 46 29" src="https://github.com/user-attachments/assets/00f4b646-ab1c-43ca-bf14-d59c7e93557b" />
 <br>
