@@ -30,7 +30,7 @@ export default function Header() {
 					</Link>
 				</h1>
 				<a
-					href="https://www.tiktok.com"
+					href="https://www.tiktok.com/@rhyme_quiz"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="ml-auto p-2 hover:bg-gray-700 rounded-lg transition-colors"
