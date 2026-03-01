@@ -71,7 +71,7 @@ PR作成後、自分自身でレビューを行う:
 Follow Conventional Commits format:
 
 ```
-<type>(<scope>): [HH:MM:SS] (HH:MM:SS) <description> #<issue番号>
+<type>(<scope>): [HH:MM:SS] {↓X.Xk tok} <description> #<issue番号>
 ```
 
 ### Type（必須）
@@ -89,23 +89,23 @@ Follow Conventional Commits format:
 
 変更対象を示す（例: `attendance`, `break`, `claude`, `api`）
 
-### 作業時間（必須）
+### 作業時間・トークン使用量（必須）
 
-1行目に AI作業時間と合計時間の両方を記載する。
+1行目に AI作業時間とトークン使用量の両方を記載する。
 
 - **`[HH:MM:SS]`**: AI作業時間。AIがプロンプトを受け取ってから処理を完了するまでの純粋な累積時間（リサーチ、コード修正、ツール実行など）。
-- **`(HH:MM:SS)`**: 合計時間。ユーザーから最初の指示を受けてから、最終的なコミットが完了するまでの全経過時間（ユーザーの返答待ち時間を含む）。
+- **`{↓X.Xk tok}`**: トークン使用量。セッション全体で消費したトークン数を千単位（k）で記載する。Claude Code のステータスバーに表示される値を参照する。
 
-形式: `[HH:MM:SS] (HH:MM:SS)`（例: `[00:05:30] (00:15:45)`）
+形式: `[HH:MM:SS] {↓X.Xk tok}`（例: `[00:05:30] {↓12.3k tok}`）
 
-> **注意**: Claude は実際の経過時間を計測する手段を持たないため、これらの値は作業規模から推定した目安であり、正確な計測値ではない。正確な時間を記録したい場合は、ユーザーが計測した値をコミット時に伝えること。
+> **注意**: Claude は実際の経過時間を計測する手段を持たないため、`[HH:MM:SS]` の値は作業規模から推定した目安であり、正確な計測値ではない。正確な時間を記録したい場合は、ユーザーが計測した値をコミット時に伝えること。
 
 ### 例
 
-- `feat(break): [00:45:12] (01:10:00) add break time input feature #42`
-- `fix(attendance): [00:12:30] (00:20:00) correct total hours calculation #15`
-- `test(break): [00:30:00] (00:45:00) add unit tests for break time validation #42`
-- `chore(claude): [00:05:00] (00:08:00) update claude code settings`
+- `feat(break): [00:45:12] {↓45.2k tok} add break time input feature #42`
+- `fix(attendance): [00:12:30] {↓12.3k tok} correct total hours calculation #15`
+- `test(break): [00:30:00] {↓28.7k tok} add unit tests for break time validation #42`
+- `chore(claude): [00:05:00] {↓5.1k tok} update claude code settings`
 
 ### ルール
 
