@@ -29,6 +29,23 @@ export default function Header() {
 						</AnimatedGradientText>
 					</Link>
 				</h1>
+				<a
+					href="https://www.tiktok.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="ml-auto p-2 hover:bg-gray-700 rounded-lg transition-colors"
+					aria-label="TikTok"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						className="size-6"
+					>
+						<title>TikTok</title>
+						<path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.12v12.303a2.934 2.934 0 1 1-2.934-2.934c.243 0 .478.034.703.09V8.277a6.055 6.055 0 0 0-.703-.041A6.056 6.056 0 1 0 15.82 14.29V8.003a7.908 7.908 0 0 0 4.47 1.383V6.269a4.816 4.816 0 0 1-.702.417Z" />
+					</svg>
+				</a>
 			</header>
 
 			<aside
